@@ -1,0 +1,8 @@
+﻿[
+	{ id: "basemanage", text: "基础设置", iconCls: "icon-add"},
+	{ id: "addUser", pid: "basemanage", text: "学校基础信息管理", iconCls: "icon-add", url: "" },
+
+	
+	{ id: "usermanage", text: "业务门户", iconCls: "icon-add"},
+	{ id: "addUser", pid: "usermanage", text: "业务开通情况", iconCls: "icon-add", url: "" }
+]

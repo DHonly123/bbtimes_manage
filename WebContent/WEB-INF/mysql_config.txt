@@ -1,0 +1,4 @@
+jdbcUrl = jdbc:mysql://127.0.0.1/bbtimes?characterEncoding=GBK&zeroDateTimeBehavior=convertToNull
+user = root
+password =cdqidi
+devMode = true

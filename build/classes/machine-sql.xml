@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="machine">
+	<sql id="countMachineRecord">
+		select d.MachineCode,count(d.DetailID) rCount
+			from ns_recordDetail_2014 d
+			left join ns_machineInfo m on m.MachineCode=d.MachineCode
+			where m.MachineID = ?
+	</sql>
+</sqlGroup>
+

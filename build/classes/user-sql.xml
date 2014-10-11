@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="user">
+	<sql id="login">
+		SELECT u.UserID,u.UserName,ifNULL(p.DisplayName,u.UserName) DisplayName,u.UserSN,u.Password,r.RoleType,r.Note,u.SchoolID,s.SchoolName
+		FROM be_users u
+		LEFT JOIN be_userroles ur ON ur.UserID=u.UserID
+		LEFT JOIN be_roles r ON r.RoleID=ur.RoleID
+		LEFT JOIN be_profiles p ON p.UserID=u.UserID
+		LEFT JOIN be_schoolinfo s ON s.SchoolID=u.SchoolID
+		WHERE r.RoleType>=100 AND trim(u.UserSN)=? AND trim(u.Password)=?
+	</sql>
+
+	<sql id="startAdminUser">
+		SELECT u.UserID,u.UserName,u.UserSN
+		,u.`Password`,u.schoolID,r.RoleType,r.Note,s.SchoolName
+	</sql>
+	<sql id="endAdminUser">
+		FROM be_users u
+		LEFT JOIN be_userroles ur ON
+		ur.UserID=u.UserID
+		INNER JOIN be_roles r ON r.RoleID=ur.RoleID
+		LEFT JOIN
+		be_schoolinfo s ON s.SchoolID=u.schoolID
+		WHERE r.RoleType>=100 AND
+		u.schoolID=?
+	</sql>
+    <sql id="deleteExtProfileByUserID">
+    	Delete from be_extProfiles where UserID=?
+    </sql>
+    <sql id="deleteProfileByUserID">
+    	Delete from be_Profiles where UserID=?
+    </sql>
+    <sql id="view_userInfo">
+    	select distinct t.userID,t.ShortUID,t.userSN,t.userName,t.userDB,t.FriendsCount,t.ValidateFriendsCount,t.TeacherFriendsCount,t.ClassFriendsCount,t.refreshCount,
+			IFNULL(p.DisplayName,t.userName) DisplayName,IFNULL(p.niCheng,t.userName) niCheng,p.aboutMe,p.level,p.identifyNmuber,p.PhoneMobile,p.ParentPhone,
+			t.schoolID,si.schoolName,r.roleType
+			from be_users t
+			left join be_userRoles ur on ur.userID=t.userID
+			left join be_roles r on r.roleID=ur.roleID
+			left join be_profiles p on p.userID=t.userID
+			left join be_schoolInfo si on si.schoolID=t.schoolID
+	</sql>
+</sqlGroup>
+

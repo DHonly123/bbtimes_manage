@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>新增学校</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="../scripts/boot.js" type="text/javascript"></script>
+<style type="text/css">
+fieldset {
+	border: solid 1px #aaa;
+}
+
+.hideFieldset {
+	border-left: 0;
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.hideFieldset .fieldset-body {
+	display: none;
+}
+
+div#photo {
+	height: 180px;
+	width: 150px;
+	float: left;
+}
+
+div#baseinfo {
+	float: left;
+	margin-left: 50px;
+}
+
+.Personal_t {
+	border: 1px solid #CCC;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #FFF;
+	padding: 5px;
+	-webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, .05);
+	-moz-box-shadow: 0px 2px 4px rgba(0, 0, 0, .05);
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, .05);
+	position: relative;
+	z-index: 33;
+}
+
+.Personal_a {
+	font-family: "微软雅黑", "宋体";
+	background-color: #6b6b6b;
+	width: 150px;
+	height: 30px;
+	font-size: 14px;
+	color: #FFF;
+	margin-top: 5px;
+	line-height: 30px;
+	text-align: center;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.Personal_a a {
+	color: #FFF;
+	text-decoration: none;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	width: 100%;
+	height: 100%;
+}
+</style>
+</head>
+<body>
+	<div class="mini-toolbar">
+		<a class="mini-button" iconCls="icon-save" onclick="onOk" plain="true">保存</a> 
+		<span class="separator"></span> 
+		<a class="mini-button" iconCls="icon-close" onclick="onCancel" plain="true">关闭</a>
+	</div>
+
+	<fieldset id="fd1">
+		<legend>
+			<span>基本信息</span>
+		</legend>
+		<div class="fieldset-body">
+			<div id="photo" class="Personal_t">
+				<div style="width: 150px; height: 150px;">
+					<img id="header" style="width: 150px; height: 150px;" src=""
+						onerror="javascript:this.src='../images/default_man.jpg'">
+				</div>
+				<div class="Personal_a">
+					<a href="javascript:uploadPhoto()">更改个人资料照片</a>
+				</div>
+			</div>
+			<form id="form1" method="post">
+				<div id="baseinfo">
+					<table class="form-table" border="0" cellpadding="1"
+						cellspacing="2">
+						<tr>
+							<td class="form-label" style="width: 80px;">班级：</td>
+							<td style="width: 150px;"><input id="className"
+								class="mini-textbox" value=""
+								enabled="false" /></td>
+							<td class="form-label" style="width: 80px;">姓名：</td>
+							<td style="width: 150px"><input name="buser.DisplayName"
+								value="${(student.DisplayName)!}" class="mini-textbox"
+								required="true" /></td>
+						</tr>
+						<tr>
+							<td class="form-label" style="width: 80px;">性别：</td>
+							<td style="width: 150px;"><input name="buser.SexID"
+								class="mini-combobox" value="${(student.SexID)!}"
+								valueField="DetailID" textField="Caption"
+								url="../kind/getSexType" required="true" /></td>
+							<td class="form-label" style="width: 80px;">手机：</td>
+							<td style="width: 150px"><input name="buser.PhoneMobile"
+								value="${(student.PhoneMobile)!}" class="mini-textbox"
+								required="true" vtype="rangeLength:11,12"/></td>
+						</tr>
+						<tr>
+							<td class="form-label" style="width: 80px;">卡号1：</td>
+							<td style="width: 150px"><input name="buser.CardNO"
+								value="${(student.CardNO)!}" class="mini-textbox"/></td>
+							<td class="form-label" style="width: 80px;">卡号2：</td>
+							<td style="width: 150px"><input name="buser.CardNO2"
+								value="${(student.CardNO2)!}" class="mini-textbox"/></td>
+						</tr>
+						<tr>
+							<td class="form-label" style="width: 80px;">卡号3：</td>
+							<td style="width: 150px"><input name="buser.CardNO3"
+								value="${(student.CardNO3)!}" class="mini-textbox"/></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="width: 150px; display: none;"><input
+								name="buser.UserType" class="mini-textbox"
+								value="${(student.UserType)!}" required="true" /></td>
+							<td style="display: none;"><input name="buser.ProfileID"
+								value="${(student.ProfileID)!}" class="mini-textbox"
+								required="true" /></td>
+							<td style="width: 150px; display: none;"><input
+								name="buser.isGenerate" class="mini-combobox"
+								value="${(student.isGenerate)!}" required="true" /></td>
+
+						</tr>
+					</table>
+				</div>
+			</form>
+
+		</div>
+	</fieldset>
+	
+	<div id="tabs" class="mini-tabs" activeindex="0"
+		style="width: 100%; height: 290px;">
+		<div title="刷卡记录" iconcls="icon-node">
+			<div class="mini-fit" style="height: 280px;">
+				<div id="datagrid1" class="mini-datagrid"
+					url="../card/getRecordDetailByUserID" idField="DetailID" showPager="false"
+					style="width: 100%; height: 100%;">
+					<div property="columns">
+						<div type="indexcolumn"></div>
+						<div field="UserName" width="120" headerAlign="center"
+							allowSort="true">姓名</div>
+						<div field="CardNumber" width="120" headerAlign="center"
+							allowSort="true">卡号</div>
+						<div field="RecordTime" width="100" align="center"
+							headerAlign="center" dateFormat="yyyy-MM-dd HH:mm:ss">刷卡时间</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div title="平台使用统计" iconcls="icon-node">
+			<div class="mini-fit" style="height: 280px;">
+				<div id="datagrid2" class="mini-datagrid"
+					url="../user/getUserCallRecord" idField="ID" showPager="false"
+					style="width: 100%; height: 100%;">
+					<div property="columns">
+						<div type="indexcolumn"></div>
+						<div field="OP_TIME" width="150" headerAlign="center" dateFormat="yyyy-MM-dd HH:mm:ss"
+							allowSort="true">操作时间</div>
+						<div field="OP_TYPE" width="100" headerAlign="center"
+							allowSort="true">操作类型</div>
+						<div field="C_Type" width="100" align="center"
+							headerAlign="center">客户端机型</div>
+						<div field="C_Version" width="100" align="center"
+							headerAlign="center">客户端版本</div>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		mini.parse();
+		var userID = mini.getParams().userID;
+		var grid1 = mini.get("datagrid1");
+		grid1.load({
+			profileID : ${(student.ProfileID)!}
+		});
+		var grid2 = mini.get("datagrid2");
+		grid2.load({
+			userID : userID
+		});		
+		var form = new mini.Form("form1");
+		$('#header').attr('src', baseHeader('${(student.UserID)!}'));
+		var className = mini.get("className");
+		$.getJSON("../user/getStudentClass", {
+			UserID : '${(student.UserID)!}'
+			}, function(data) {
+				if (data != null) {
+					className.setValue(data[0].GroupName);
+				}
+			});
+		
+		function SaveData() {
+			form.validate();
+			if (form.isValid() == false)
+				return;
+			$.ajax({
+				url : "../user/update",
+				type : "post",
+				data : $("#form1").serialize(),
+				cache : false,
+				dataType : "json",
+				success : function(data) {
+					CloseWindow("save");
+					mini.alert(data);
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					mini.alert(jqXHR.responseText);
+					CloseWindow();
+				}
+			});
+		}
+
+		function CloseWindow(action) {
+			if (action == "close" && form.isChanged()) {
+				if (confirm("数据被修改了，是否先保存？")) {
+					return false;
+				}
+			}
+			if (window.CloseOwnerWindow)
+				return window.CloseOwnerWindow(action);
+			else
+				window.close();
+		}
+		function onOk(e) {
+			SaveData();
+		}
+		function onCancel(e) {
+			CloseWindow("cancel");
+		}
+
+		function uploadPhoto() {
+			mini.open({
+				url : "user/photo.html?id=${(student.UserID)!}&type=02",
+				title : "用户头像修改",
+				width : 820,
+				height : 600,
+				onload : function() {
+				},
+				ondestroy : function(action) {
+					$("#header").attr("src", baseHeader('${(student.UserID)!}'));
+				}
+			});
+		}
+	</script>
+</body>
+</html>

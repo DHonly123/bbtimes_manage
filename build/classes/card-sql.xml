@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="card" >
+	<sql id="exeRecordDetail">
+		insert into ns_record(recordID,schoolID,UserID,RecordDate,AmTime,PmTime)
+		select dd.DetailID recordID,u.schoolID,u.UserID,SUBSTR(dd.RecordTime,1,10) recordDate,
+		SUBSTR(dta.RecordTime,12,8) amTime ,SUBSTR(dtp.RecordTime,12,8) pmTime
+		from ns_recordDetail_2014 dd
+		inner join (select rd.DetailID,rd.PersonID,SUBSTR(rd.RecordTime,1,10) RecordDate,min(rd.RecordTime) RecordTime from ns_recordDetail_2014 rd
+		where rd.execTime is null group by rd.PersonID,SUBSTR(rd.RecordTime,1,10)) dta on dd.personID=dta.personID and dd.recordTime=dta.recordTime
+		inner join (select rd.DetailID,rd.PersonID,SUBSTR(rd.RecordTime,1,10) RecordDate,max(rd.RecordTime) RecordTime from ns_recordDetail_2014 rd
+		where rd.execTime is null  group by rd.PersonID,SUBSTR(rd.RecordTime,1,10)) dtp on dta.personID=dtp.personID and dta.RecordDate=dtp.RecordDate
+		left join be_profiles p on p.profileID=dd.personID
+		left join be_users u on u.userID=p.userID
+	</sql>
+	<sql id="updateExecTime">
+		update ns_recordDetail_2014 set execTime=now() where DetailID=?
+	</sql>
+	<sql id="getUnexecRecord">
+		select rd.DetailID recordID,u.schoolID,u.UserID,SUBSTR(rd.RecordTime,1,10) recordDate,
+		SUBSTR(rd.RecordTime,12,8) recordTime
+		from ns_recordDetail_2014 rd
+		left join be_profiles p on rd.PersonID=p.ProfileID
+		left join be_users u on u.UserID=p.UserID
+		where rd.execTime is null
+	</sql>
+</sqlGroup>
+
+

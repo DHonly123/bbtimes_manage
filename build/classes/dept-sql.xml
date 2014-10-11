@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="dept">
+	<sql id="countDeptUser">
+		select d.DeptID,count(p.profileID) duCount
+			from be_profiles p
+			left join be_deptinfo d on d.DeptID = p.deptID
+			where d.DeptID =? 
+	</sql>
+</sqlGroup>
+

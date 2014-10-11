@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="cloud">
+	<sql id="getSchoolList">
+		SELECT
+		s.SchoolID,s.SchoolCode,s.SchoolName,s.ProvinceID,p.ProvinceName,s.CityID,c.CityName,s.DistrictID,d.DistrictName,
+		s.intType,e1.Caption TypeName,s.locationType,e2.Caption locationName,s.CapitalType,e3.Caption CapitalName,s.intState
+		FROM be_schoolinfo s
+		LEFT JOIN sys_enumdetail e1 ON s.intType=e1.DetailID
+		LEFT JOIN sys_enumdetail e2 ON s.locationType=e2.DetailID
+		LEFT JOIN sys_enumdetail e3 ON s.CapitalType=e3.DetailID
+		LEFT JOIN sys_province p ON s.ProvinceID=p.ProvinceID
+		LEFT JOIN sys_city c ON c.CityID=s.CityID
+		LEFT JOIN sys_district d ON d.DistrictID=s.DistrictID
+		Where 1=1
+	</sql>
+	<sql id="getTeacherList">
+		select p.ProfileID,p.UserID,p.UserType,p.DisplayName,d.SchoolID,d.DeptID,d.DeptName,p.identifyNmuber,
+		p.PhoneMobile,p.SexID,e.Caption sex,p.CardNO,p.CardNO2,p.CardNO3,p.emailAddress,p.Address,p.aboutMe,p.intState 
+		from be_profiles p
+		inner join be_deptinfo d on p.deptID=d.deptID
+		left join sys_enumdetail e on e.DetailID=p.SexID
+		where d.schoolID=? and p.UserType=0 and p.intState=1
+	</sql>
+	<sql id="getStudentList">
+		select p.ProfileID,p.UserID,p.UserType,p.DisplayName,ep.schoolID,ep.classID,g.groupName className,p.identifyNmuber,
+		p.PhoneMobile,p.SexID,e.Caption sex,p.CardNO,p.CardNO2,p.CardNO3,p.emailAddress,p.Address,p.aboutMe,p.intState 
+		from be_profiles p
+		inner join be_extprofiles ep on ep.userID=p.UserID
+		inner join ms_group g on g.ID=ep.classID
+		left join sys_enumdetail e on e.DetailID=p.SexID
+		where ep.schoolID=? and p.UserType=2 and p.intState=1
+	</sql>
+	<sql id="createRecordDetailTable">
+		CREATE TABLE ? (
+		  `DetailID` int(11) NOT NULL AUTO_INCREMENT,
+		  `DataID` varchar(64) DEFAULT NULL,
+		  `PersonID` int(11) DEFAULT NULL,
+		  `UserName` varchar(20) DEFAULT NULL,
+		  `CardNumber` varchar(16) DEFAULT NULL,
+		  `RecordTime` varchar(20) DEFAULT NULL,
+		  `Status` int(11) DEFAULT NULL,
+		  PRIMARY KEY (`DetailID`)
+		)
+	</sql>
+</sqlGroup>

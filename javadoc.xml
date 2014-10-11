@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="WebContent/WEB-INF/lib/poi-3.7.jar:WebContent/WEB-INF/lib/mysql-connector-java-5.1.20-bin.jar:WebContent/WEB-INF/lib/log4j-1.2.16.jar:WebContent/WEB-INF/lib/commons-jexl-1.0.jar:WebContent/WEB-INF/lib/servlet-api.jar:WebContent/WEB-INF/lib/slf4j-api-1.6.6.jar:WebContent/WEB-INF/lib/guava-15.0.jar:WebContent/WEB-INF/lib/ueditor.jar:WebContent/WEB-INF/lib/cos-26Dec2008.jar:WebContent/WEB-INF/lib/jackson-all-1.7.6.jar:WebContent/WEB-INF/lib/JFinal-bin-with-src-1.4.jar:/usr/java/eclipse/plugins/org.junit_3.8.2.v3_8_2_v20100427-1100/junit.jar:WebContent/WEB-INF/lib/c3p0-0.9.1.2.jar:WebContent/WEB-INF/lib/freemarker-2.3.16.jar:WebContent/WEB-INF/lib/ehcache-2.7.3.jar:WebContent/WEB-INF/lib/commons-logging-1.1.1.jar:WebContent/WEB-INF/lib/jfinal-ext-3.0.1.jar:WebContent/WEB-INF/lib/commons-fileupload-1.2.2.jar:WebContent/WEB-INF/lib/joor-0.9.1.jar" destdir="doc" doctitle=" 宝贝时光后台管理" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.cdqidi.bb.dept,com.cdqidi.bb.comm,com.cdqidi.bb.codetable.test,com.cdqidi.conn.plugin.sqlxml,com.cdqidi.bb.comm.plugin.tablebind,com.cdqidi.bb.notice,com.cdqidi.bb.comm.annotation,com.cdqidi.bb.comm.util,com.cdqidi.bb.user,com.cdqidi.bb.classes,com.cdqidi.bb.school,com.cdqidi.bb.codetable,com.cdqidi.bb.report" source="1.6" sourcepath="src" splitindex="true" use="true" version="true">
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="http://www.junit.org/junit/javadoc/3.8.1"/>
+        </javadoc>
+    </target>
+</project>

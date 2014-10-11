@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>新增学校管理员</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+     <script src="../scripts/boot.js" type="text/javascript"></script>
+
+    <style type="text/css">
+    fieldset
+    {
+        border:solid 1px #aaa;
+    }        
+    .hideFieldset
+    {
+        border-left:0;
+        border-right:0;
+        border-bottom:0;
+    }
+    .hideFieldset .fieldset-body
+    {
+        display:none;
+    }
+     body {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		width: 100%;
+		height: 100%;
+		}
+    
+    </style>
+</head>
+<body>
+       <div class="mini-toolbar" style="border:0;padding:0px;">
+            <table style="width:100%;">
+                <tr>
+                    <td style="width:100%;">
+                        <a class="mini-button" iconCls="icon-save" onclick="onOk" plain="true">保存</a>  
+                        <a class="mini-button" iconCls="icon-remove" onclick="onCancel" plain="true">取消</a>
+                        <span class="separator"></span>
+                                  
+                    </td>
+                    <td style="white-space:nowrap;">
+                        <input id="key" class="mini-textbox" emptyText="请输入姓名" style="width:150px;" onenter="onKeyEnter"/>   
+                        <a class="mini-button" onclick="search()">查询</a>
+                    </td>
+                </tr>
+            </table>           
+        </div>
+        <form id="form1" method="post">
+    <fieldset id="fd1" style="width:800px;">
+        <legend><span>基本信息</span></legend>
+        <div class="fieldset-body">
+            <table class="form-table" border="0" cellpadding="1" cellspacing="2">
+                <tr>
+                    <td class="form-label" style="width:80px;">省(自治区)：</td>
+                    <td style="width:150px">
+                       <input id="provinceCombo" name="school.ProvinceID" value="${(school.ProvinceID)!}" class="mini-combobox"  textField="ProvinceName" valueField="ProvinceID" 
+        onvaluechanged="onProvinceChanged" url="../area/getProvinces"
+        showNullItem="true"
+        required="true"  /> 
+                    </td>
+                    <td class="form-label" style="width:80px;">所在城市：</td>
+                    <td style="width:150px">
+                        <input id="cityCombo" name="school.CityID" value="${(school.CityID)!}" class="mini-combobox"  textField="CityName" valueField="CityID" 
+        onvaluechanged="onCityChanged" showNullItem="true" url = "../area/getCities?provinceID=${(school.ProvinceID)!}"
+       required="true"   /> 
+                    </td>
+                    <td class="form-label" style="width:80px;">所在区县：</td>
+                    <td style="width:150px">
+                        <input id="districtCombo" name="school.DistrictID" value="${(school.DistrictID)!}" class="mini-combobox"  textField="DistrictName" valueField="DistrictID" 
+      
+       onvaluechanged="onDistrictChanged" showNullItem="true" url = "../area/getDistricts?cityID=${(school.CityID)!}" required="true"  /> 
+                    </td>
+                </tr>
+                <tr>
+                   
+                    <td  class="form-label" style="width:80px;">管理学校：</td>
+                    <td style="width:150px;">    
+                        <input id="schoolCombo" name="user.schoolID" value="${(school.SchoolID)!}" class="mini-combobox" valueField="SchoolID" textField="SchoolName" 
+                            url = "../school/getSchools?districtID=${(school.DistrictID)!}" required="true" />
+                    </td>
+                     <td class="form-label" style="width:80px;">用户帐号：</td>
+                    <td style="width:150px">
+                        <input name="user.UserSN"  class="mini-textbox"  required="true" />
+                    </td>
+                      <td class="form-label" style="width:80px;">用户密码：</td>
+                    <td style="width:150px">
+                        <input name="user.Password"  class="mini-textbox"  required="true" />
+                    </td>
+                </tr>
+                <tr>
+                 <td  class="form-label" style="width:80px;">用户姓名：</td>
+                    <td style="width:150px">
+                        <input name="user.UserName"  class="mini-textbox"  required="true" />
+                    </td>
+                    <td  class="form-label" style="width:80px;">用户类型：</td>
+                    <td style="width:150px;">    
+                        <input name="userroles.RoleID" class="mini-combobox" valueField="RoleID" textField="Note" 
+                            url="../user/getAdminUserType"   required="true" />
+                    </td>       
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+</form>
+    <script type="text/javascript">
+    mini.parse();
+    
+    var provinceCombo = mini.get("provinceCombo");
+    var cityCombo = mini.get("cityCombo");
+    var districtCombo = mini.get("districtCombo");
+    var schoolCombo = mini.get("schoolCombo");
+
+    function onProvinceChanged(e) {
+        var id = provinceCombo.getValue();
+        cityCombo.setValue("");
+        districtCombo.setValue("");
+        schoolCombo.setValue("");
+        var url = "../area/getCities?provinceID=" + id
+        cityCombo.setUrl(url);
+        cityCombo.select(0);
+    }
+    function onCityChanged(e) {
+        var id = cityCombo.getValue();
+        districtCombo.setValue("");
+        schoolCombo.setValue("");
+        var url = "../area/getDistricts?cityID=" + id
+        districtCombo.setUrl(url);
+        districtCombo.select(0);
+    }
+    function onDistrictChanged(e) {
+        var id = districtCombo.getValue();
+        schoolCombo.setValue("");
+        var url = "../school/getSchools?districtID=" + id
+        schoolCombo.setUrl(url);
+        schoolCombo.select(0);
+    }
+    
+        function toggleFieldSet(ck, id) {
+            var dom = document.getElementById(id);
+            dom.className = !ck.checked ? "hideFieldset" : "";
+        }
+        
+        var form = new mini.Form("form1");
+        function SaveData() {
+            form.validate();
+            if (form.isValid() == false) return;
+            $.ajax({
+                url: "../user/saveAdminUser",
+                type:"post",
+                data:$("#form1").serialize(),
+                cache: false,
+                dataType:"json",
+                success: function (data) {
+                	// CloseWindow("save");
+                	 mini.alert(data.msg);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    mini.alert(jqXHR.responseText);
+                   // CloseWindow();
+                }
+            });
+        }
+        
+        /**
+    	 * 用javascript动态创建form表单，并提交数据到某个网址的示例函数
+    	 * url: 提交数据到这个网址
+    	 * oData: 可选，需要提交的数据对象，格式如：{a: '1', b: '2'}
+    	 */
+    	function jsSubmit(url, oData) {
+    	    var $ = function(id){return document.getElementById(id);};
+    	    var sFormId = 'jsSubmitter',
+    	        dForm = $(sFormId);
+
+    	    if (!dForm) {  //create form
+    	        dForm = document.createElement('form');
+    	        dForm.id = sFormId;
+    	        dForm.method = 'POST';
+    	       // dForm.target = '_blank';
+    	        dForm.style.display = 'none';
+    	        document.body.appendChild(dForm);
+    	    }
+
+    	    dForm.innerHTML = '';   //clean
+    	    if (typeof(oData) == 'object') {    //append data
+    	        var dInput;
+    	        for (key in oData) {
+    	            dInput = document.createElement('input');
+    	            dInput.type = 'hidden';
+    	            dInput.name = key;
+    	            dInput.value = oData[key];
+    	            dForm.appendChild(dInput);
+    	        }
+    	    }
+
+    	    dForm.action = url;
+    	    dForm.submit();
+    	}
+        ////////////////////
+        //标准方法接口定义
+        function SetData(data) {
+            if (data.action == "edit") {
+                //跨页面传递的数据对象，克隆后才可以安全使用
+                data = mini.clone(data);
+                $.ajax({
+                    url: "../data/AjaxService.jsp?method=GetEmployee&id=" + data.id,
+                    cache: false,
+                    success: function (text) {
+                        var o = mini.decode(text);
+                        form.setData(o);
+                        form.setChanged(false);
+                        onDeptChanged();
+                        mini.getbyName("position").setValue(o.position);
+                    }
+                });
+            }
+        }
+
+        function GetData() {
+            var o = form.getData();
+            return o;
+        }
+        function CloseWindow(action) {            
+            if (action == "close" && form.isChanged()) {
+                if (confirm("数据被修改了，是否先保存？")) {
+                    return false;
+                }
+            }
+            if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+            else window.close();            
+        }
+        function onOk(e) {
+            SaveData();
+        }
+        function onCancel(e) {
+            CloseWindow("cancel");
+        }
+    </script>
+</body>
+</html>

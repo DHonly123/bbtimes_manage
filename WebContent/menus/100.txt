@@ -1,0 +1,24 @@
+﻿[   
+    { id: "system", text: "系统管理", iconCls: "icon-collapse"},
+    { id: "schoolManagement", pid: "system", text: "学校管理",  url: "school/schoolnav.html", iconCls: "Reports", iconPosition:"top"},
+    { id: "businessManagement", pid: "system", text: "系统通知", url: "notice/notices.html", iconCls: "Reports", iconPosition:"top"},
+
+	{ id: "user", text: "业务管理", iconCls: "icon-collapse"},
+	{ id: "addUser", pid: "user", text: "学校管理员",  url: "school/adminnav.html", iconCls: "Reports", iconPosition:"top" },
+	{ id: "cardMachine", pid: "user", text: "接送机列表", iconCls: "", url: "card/adminnav.html", iconCls: "Reports", iconPosition:"top" },
+	{ id: "accountManage", pid: "user", text: "帐号管理", url: "#", iconCls: "Reports", iconPosition:"top" },
+	    
+    { id: "analysis", text: "统计分析", iconCls: "icon-help"},
+	{ id: "report1", pid: "analysis", text: "平台发图一览", url: "analysis/businessSummary.html", iconCls: "Reports", iconPosition:"top"},
+	{ id: "report2", pid: "analysis", text: "30日发图一览", url: "analysis/past30.html", iconCls: "Reports", iconPosition:"top"},
+	{ id: "report3", pid: "analysis", text: "平台发图top10", url: "analysis/top10.html", iconCls: "Reports", iconPosition:"top"},
+	{ id: "report4", pid: "analysis", text: "30日发消息一览", url: "analysis/mPast30.html", iconCls: "Reports", iconPosition:"top"},
+	    
+    { id: "codetable", text: "码表管理", iconCls: "icon-collapse"},
+	{ id: "tableType", pid: "codetable", text: "码表类别管理",  url: "#", iconCls: "Reports", iconPosition:"top" },
+	{ id: "tableValue", pid: "codetable", text: "码表值库管理 ",  url: "#", iconCls: "Reports", iconPosition:"top" },
+	
+	{ id: "right", text: "权限管理",iconCls: "icon-collapse"},
+	{ id: "addRight", pid: "right", text: "查询权限",  url: "#", iconCls: "Reports", iconPosition: "top" },
+	{ id: "editRight", pid: "right", text: "操作权限",  url: "#", iconCls: "Reports", iconPosition: "top" }		
+]

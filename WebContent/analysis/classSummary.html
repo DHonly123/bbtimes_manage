@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>classSummary</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="../scripts/boot.js"></script>
+<script type="text/javascript" src="../scripts/amcharts/amcharts.js"></script>
+<script type="text/javascript" src="../scripts/amcharts/serial.js"></script>
+<script type="text/javascript" src="../scripts/amcharts/pie.js"></script>
+<style type="text/css">
+	body {
+		font-size: 12px;
+		color: black;
+	}
+	
+	a:link {
+		color: #84c4e2;
+	}
+	
+	a:visited {
+		color: #84c4e2;
+	}
+	
+	a:hover {
+		color: #cd82ad;
+	}
+	
+	a:active {
+		color: #84c4e2;
+	}
+</style>
+</head>
+<body>
+	<div id="tabs" class="mini-tabs" activeindex="0"
+		style="width: 100%; height: 540px;">
+		<div title="班级发图一览" iconcls="icon-node">
+			<div id="chartdiv1" style="width: 100%; height: 100%;"></div>
+		</div>
+		<div title="月发图变化曲线" iconcls="icon-node" enabled="false">
+			<div id="chartdiv2" class="mini-fit"
+				style="width: 100%; height: 100%"></div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		mini.parse();
+		var tabs = mini.get("tabs");
+
+		buildSummaryChart();
+
+		function buildSummaryChart() {
+			
+			var schoolId = readCookie("bbm_usercookie", 3, "&");
+			$.ajax({
+						url : "../report/classSummary",
+						data : {schoolID : schoolId},
+						type : "post",
+						success : function(result) {
+							var charData = JSON.parse(JSON.stringify(result));
+							var chart = new AmCharts.AmPieChart();
+							chart.dataProvider = charData;
+							chart.valueField = "value";
+							chart.titleField = "label";
+							chart.balloonText = "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>";
+							chart.legend = {
+								align : "center",
+								markerType : "circle"
+							};
+
+							chart.addListener(
+											"clickSlice",
+											function(e) {
+												buildTrendChart(e.dataItem.dataContext.classID);
+											});
+
+							chart.write("chartdiv1");
+						},
+						error : function() {
+
+						}
+					});
+		}
+
+		function buildTrendChart(classID) {
+			
+			$.ajax({
+						url : "../report/classTrend",
+						data : {
+							classID : classID
+						},
+						type : "post",
+						success : function(result) {
+							tabs.activeTab(1);
+							var charData = JSON.parse(JSON.stringify(result));
+							var chart = new AmCharts.AmSerialChart();
+		                    chart.dataProvider = charData;
+		                    chart.categoryField = "label";
+
+		                    var graph = new AmCharts.AmGraph();
+		                    graph.valueField = "value";
+		                    graph.type = "column";
+		                    graph.lineAlpha = 0;
+		                    graph.fillAlphas = 0.8;
+		                    chart.addGraph(graph);
+
+		                    chart.write("chartdiv2");
+						},
+						error : function() {
+
+						}
+					});
+		}
+	</script>
+</body>
+</html>
+

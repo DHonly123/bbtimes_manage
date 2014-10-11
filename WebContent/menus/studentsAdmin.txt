@@ -1,0 +1,4 @@
+﻿[
+	{ id: "usermanage", text: "业务门户", iconCls: "icon-add"},
+	{ id: "addUser", pid: "usermanage", text: "业务开通情况", iconCls: "icon-add", url: "" }
+]

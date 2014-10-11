@@ -1,0 +1,543 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>学生列表</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="../scripts/boot.js" type="text/javascript"></script>
+<style type="text/css">
+body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+</style>
+</head>
+<body>
+	<!--Layout-->
+	<div id="layout1" class="mini-layout"
+		style="width: 100%; height: 100%;">
+		<div title="center" region="center" bodyStyle="overflow:hidden;"
+			style="border: 0;">
+			<!--Splitter-->
+			<div class="mini-splitter" style="width: 100%; height: 100%;"
+				borderStyle="border:0;">
+				<div size="180" maxSize="250" minSize="100"
+					showCollapseButton="true" style="border-width: 1px;">
+					<!--Tree-->
+					<div class="mini-toolbar"
+						style="padding: 2px; border-top: 0; border-left: 0; border-right: 0;">
+						<label>&nbsp;</label> <input id="key" class="mini-textbox"
+							emptyText="班级名称" style="width: 100px;" onenter="onKeyEnter" /> <a
+							class="mini-button" iconCls="icon-search" onclick="search()">查询</a>
+					</div>
+					<ul id="leftTree" class="mini-tree"
+						style="width: 100%; height: 100%;" expandOnLoad="true"
+						showTreeIcon="true" textField="Caption" idField="ID"
+						parentField="PID" resultAsTree="false"
+						onnodeselect="onNodeSelect">
+					</ul>
+				</div>
+				<div showCollapseButton="false" style="border: 0px;">
+					<div class="mini-toolbar" style="padding: 0px; border: 0;">
+						<table style="width: 100%;" id="barvalue" dist_id="0">
+							<tr>
+								<td style="width: 100%;">
+									<input id="classid" style="display: none;" /> 
+									<a class="mini-button" iconCls="icon-add" onclick="add()" plain="true">增加</a> 
+									<a class="mini-button" iconCls="icon-edit" onclick="edit()" plain="true">编辑</a>
+									<a class="mini-button" iconCls="icon-remove" onclick="remove()" plain="true">删除</a>
+									<span class="separator"></span> 
+									<a class="mini-menubutton" iconCls="icon-tip" plain="true" menu="#popupOperation">业务操作</a>
+									<span class="separator"></span>
+									<a class="mini-menubutton" id="btn-account" iconCls="icon-tip" plain="true" menu="#popupAccount">帐号管理</a> 
+									<a class="mini-menubutton" iconCls="icon-tip" plain="true" menu="#popupPassword">密码管理</a>
+								</td>
+								<td style="white-space: nowrap;">
+									<label style="font-family: Verdana;">查询条件：</label> 
+									<input class="mini-textbox" emptyText="姓名/昵称/手机号" id="gridkey" /> 
+									<a class="mini-button" iconCls="icon-search" onclick="gridsearch()" plain="true">查询</a>
+								</td>
+							</tr>
+						</table>
+						<!--menu0-->
+						<ul id="popupOperation" class="mini-menu" style="display: none;">
+							<li iconCls="icon-redo" onclick="importInfo()">导入档案</li>
+							<li class="separator"></li>
+							<li iconCls="icon-goto" onclick="changeClass()">班级调整</li>
+							<li class="separator"></li>
+							<li iconCls="icon-download" onclick="exportExcel()">导出Excel</li>
+
+						</ul>
+						
+						<!--menu1-->
+						<ul id="popupAccount" class="mini-menu" style="display: none;">
+							<li iconCls="icon-addnew" onclick="generateAccount()">生成业务帐号</li>
+							<li class="separator"></li>
+							<li iconCls="icon-lock" onclick="changeStatus(0)">停用业务帐号</li>
+							<li class="separator"></li>
+							<li iconCls="icon-unlock" onclick="changeStatus(1)">启用业务帐号</li>
+
+						</ul>
+						<!--menu2-->
+						<ul id="popupPassword" class="mini-menu" style="display: none;">
+							<li iconCls="icon-edit" onclick="getPass()">查看账户密码</li>
+							<li class="separator"></li>
+							<li iconCls="icon-lock" onclick="resetPass()">重置账户密码</li>
+
+
+						</ul>
+					</div>
+					<div class="mini-fit">
+						<div id="grid1" class="mini-datagrid"
+							style="width: 100%; height: 100%;" borderStyle="border:0;"
+							url="../user/getClassStudent" sizeList="[5,10,20,50]"
+							pageSize="20" idField="UserID" totalField="totalRow"
+							dataField="list" multiSelect="true">
+							<div property="columns">
+								<!-- <div type="indexcolumn"></div>  -->
+								<div type="checkcolumn"></div>
+								<div field="GroupName" width="120" headerAlign="center"
+									allowSort="true" >
+									班级<input class="mini-textbox" style="width: 100%;" />
+								</div>
+								<div field="DisplayName" width="100" headerAlign="center"
+									allowSort="true" renderer="onRendererColor">
+									姓名 <input class="mini-textbox" style="width: 100%;" />
+								</div>
+								<div field="SexCaption" width="60" headerAlign="center"
+									allowSort="true">
+									性别 <input class="mini-combobox" style="width: 100%;" />
+								</div>
+								<div field="CardNO" width="100" allowSort="true">
+									卡号 <input class="mini-textbox" style="width: 100%;" />
+								</div>
+								<div field="PhoneMobile" width="100" allowSort="true">
+									电话号码 <input class="mini-textbox" style="width: 100%;" />
+								</div>
+								<div field="niCheng" width="100" allowSort="true">
+									用户昵称 <input class="mini-textbox" style="width: 100%;" />
+								</div>
+								<div field="isGenerate" width="100" allowSort="true"
+									renderer="onRendererBoolean">
+									是否生成帐号 <input class="mini-combobox" style="width: 100%;"
+										data="boos" />
+								</div>
+								<div field="isApp" width="100" allowSort="true"
+									renderer="onRendererBoolean">
+									是否安装客户端 <input class="mini-combobox" style="width: 100%;"
+										data="boos" />
+								</div>
+								<div field="intState" width="100" allowSort="true"
+									renderer="onRendererState">
+									帐号状态 <input class="mini-combobox" style="width: 100%;" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+    
+<!--导出Excel相关HTML-->
+<form id="excelForm"  action="../user/exportClassStudent" method="post" target="excelIFrame">
+    <input type="hidden" name="classID" id="classID" />
+    <input type="hidden" name="key" id="key" />
+</form>
+<iframe id="excelIFrame" name="excelIFrame" style="display:none;"></iframe>
+	
+	<script type="text/javascript">
+		mini.parse();
+		var roleType=readCookie("bbm_usercookie",4,"&");
+		var accountBtn=mini.get("btn-account");
+		if (roleType==102){
+			accountBtn.setVisible(false);	
+		}
+		var tree = mini.get("leftTree");
+		var schoolId = readCookie("bbm_usercookie", 3, "&");
+		var url = "../class/getClassList?schoolID=" + schoolId;
+		tree.load(url);
+		var grid = mini.get("grid1");
+		grid.on('rowdblclick', function(row) {
+			addTab("user/getUserBaseInfoByUserID?userType=2&userID=" + row.record.UserID,
+					row.record.DisplayName + "个人信息");
+		})
+		var boos = [ {
+			id : 1,
+			text : '是'
+		}, {
+			id : 0,
+			text : '否'
+		} ];
+		var state = [ {
+			id : 1,
+			text : '启用'
+		}, {
+			id : 0,
+			text : '停用'
+		} ];
+		
+		function onRendererColor(e) {
+			if (parseInt(e.record.isGenerate) > 0) {
+                if (parseInt(e.record.intState) == 1)
+                    return "<span style='color:blank;'>" + e.record.DisplayName + "</span>";
+                else
+                    return "<span style='color:gray;'>" + e.record.DisplayName + "</span>";
+            } else {
+                return "<span style='color:red;'>" + e.record.DisplayName + "</span>";
+            }
+		}
+		function onRendererState(e) {
+			for (var i = 0, l = state.length; i < l; i++) {
+				var g = state[i];
+				if (g.id == e.value)
+					return g.text;
+			}
+			return "";
+		}
+		function onRendererBoolean(e) {
+			for (var i = 0, l = boos.length; i < l; i++) {
+				var g = boos[i];
+				if (g.id == e.value)
+					return g.text;
+			}
+			return "";
+		}
+
+		function renderSex(e) {
+			var url = "../kind/getSexType";
+			var data = $.ajax({
+				url : url,
+				async : false
+			}).responseText;
+			data = eval(data);
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].DetailID == e.value) {
+					return data[i].Caption;
+				}
+			}
+			return '';
+		}
+		function search() {
+			var key = mini.get("key").getValue();
+			if (key == "") {
+				tree.clearFilter();
+			} else {
+				key = key.toLowerCase();
+				tree.filter(function(node) {
+					var text = node.Caption ? node.Caption.toLowerCase()
+							: "";
+					if (text.indexOf(key) != -1) {
+						return true;
+					}
+				});
+			}
+		}
+
+		function onKeyEnter(e) {
+			search();
+		}
+
+		function gridsearch() {
+			var node = tree.getSelectedNode();
+			if (node == null) {
+				mini.alert("请选择班级!");
+			} else {
+				var key = mini.get("gridkey").getValue();
+				grid.load({
+					key : key,
+					classID : node.ID,
+					userType : 2
+				});
+			}
+		}
+		$("#gridkey").bind("keydown", function(e) {
+			if (e.keyCode == 13) {
+				gridsearch();
+			}
+		});
+
+		function importInfo() {
+			var node = tree.getSelectedNode();
+			if (node == null || !(tree.isLeaf(node))) {
+				mini.alert("请选择班级!");
+			} else {
+				mini.open({
+					url : "user/fileUpload.html?schoolID=" + schoolId + "&id="
+							+ node.ID + "&userType=2",
+					title : node.Caption + "-学生档案导入"
+
+				});
+			}
+		}
+		
+		function exportExcel() {
+		        
+            var node = tree.getSelectedNode();
+            var key = mini.get("gridkey").getValue();
+			if (node == null) {
+				mini.alert("请选择班级!");
+			}else {
+				document.getElementById("classID").value = node.ID;
+				document.getElementById("key").value = key;
+			    var excelForm = document.getElementById("excelForm");
+			    excelForm.submit();
+			}
+        }
+		
+		//添加记录
+		function add() {
+			var node = tree.getSelectedNode();
+			if (node == null || !(tree.isLeaf(node))) {
+				mini.alert("请选择班级!");
+			} else
+
+				addTab("students/addstudent.html?schoolID=" + schoolId
+						+ "&classID=" + node.ID, "新增学生档案");
+		}
+
+		var index = 2;
+		function addTab(url, title) {
+			var tabs = window.parent.mini.get("mainTabs");
+			//add tab
+			var tab = {
+				title : title,
+				url : url,
+				showCloseButton : true,
+				ondestroy : function() {
+					grid.reload();
+				}
+			};
+			tab = tabs.addTab(tab);
+			//tab body
+			var el = tabs.getTabBodyEl(tab);
+			el.innerHTML = index;
+			//active tab
+			tabs.activeTab(tab);
+
+		}
+
+		//编辑记录
+		function edit() {
+			var row = grid.getSelected();
+			debugger;
+			if (row) {
+				addTab("user/getUserBaseInfoByUserID?userType=2&userID=" + row.UserID, "修改学生档案");
+			} else {
+				mini.alert("请选中一条记录!");
+			}
+
+		}
+
+		//删除记录
+		function remove() {
+			var row = grid.getSelected();
+			if (row) {
+				grid.loading();
+				$.ajax({
+					url : "../user/delete",
+					type : "post",
+					data : {
+						userID : row.UserID
+					},
+					cache : false,
+					dataType : "json",
+					success : function(data) {
+						mini.alert(data.msg);
+						grid.reload();
+					},
+					error : function(jqXHR) {
+						mini.alert(jqXHR.responseText);
+					}
+				});
+				grid.unmask();
+
+			} else {
+				mini.alert("请选中一条记录！");
+			}
+
+		}
+
+		function onNodeSelect(e) {
+			//var node = e.node;
+			//var isLeaf = e.isLeaf;
+			//if (isLeaf) {
+			grid.load({
+				classID : e.node.ID,
+				userType : 2
+			});
+			//	mini.get("classid").setValue(e.node.ID);
+
+			//}
+		}
+
+		function generateAccount() {
+			var rows = grid.getSelecteds();
+			if (!(rows.length > 0)) {
+				mini.alert("请选择数据行!");
+			} else {
+				var userids = new Array();
+				for (var i = 0; i < rows.length; i++) {
+					if (rows[i].isGenerate == 0) {
+						userids.push(rows[i].UserID);
+					}
+				}
+				if (userids.length > 0) {
+					grid.loading();
+					$.ajax({
+						url : "../user/generateAccount",
+						type : "post",
+						data : {
+							userids : userids.toString()
+						},
+						cache : false,
+						dataType : "json",
+						success : function(data) {
+							mini.alert(data.msg);
+							grid.reload();
+						},
+						error : function(jqXHR) {
+							mini.alert(jqXHR.responseText);
+						}
+					});
+					grid.unmask();
+				} else
+					mini.alert("没有需要生成帐号的数据!");
+			}
+		}
+
+		function changeClass() {
+			var rows = grid.getSelecteds();
+			if (!(rows.length > 0)) {
+				mini.alert("请选择数据行!");
+			} else {
+				var userids = new Array();
+				var usernames = new Array();
+				for (var i = 0; i < rows.length; i++) {
+					usernames.push(rows[i].DisplayName);
+					userids.push(rows[i].UserID);
+				}
+				var node = tree.getSelectedNode();
+				mini.open({
+							url : 'students/studentchangeclass.html?ID='
+									+ node.ID
+									+ "&UserIDs="
+									+ userids
+									+ "&userNames="
+									+ encodeURIComponent(encodeURIComponent(usernames)),
+							title : '学生调班',
+							showMaxButton : false,
+							width : 350,
+							height : 400,
+							ondestroy : function(action) {
+								grid.reload();
+							}
+						});
+			}
+
+		}
+
+		function changeStatus(status) {
+			var rows = grid.getSelecteds();
+			if (!(rows.length > 0)) {
+				mini.alert("请选择数据行!");
+			} else {
+				var userids = new Array();
+				for (var i = 0; i < rows.length; i++) {
+					if (rows[i].isGenerate == 1) {
+						userids.push(rows[i].UserID);
+					}
+				}
+				if (userids.length > 0) {
+					grid.loading();
+					$.ajax({
+						url : "../user/changeUserStatus",
+						type : "post",
+						data : {
+							userID : userids.toString(),
+							status : status
+						},
+						cache : false,
+						dataType : "json",
+						success : function(data) {
+							mini.alert(data.msg);
+							grid.reload();
+						},
+						error : function(jqXHR) {
+							mini.alert(jqXHR.responseText);
+
+						}
+					});
+					grid.unmask();
+				}else
+					mini.alert("没有需要更改帐号状态的数据!");
+
+			}
+		}
+
+		function getPass() {
+			var rows = grid.getSelecteds();
+			if (!(rows.length > 0)) {
+				mini.alert("请选择数据行!");
+			} else {
+				var userids = new Array();
+				for (var i = 0; i < rows.length; i++) {
+					if (rows[i].isGenerate == 1) {
+						userids.push(rows[i].UserID);
+					}
+				}
+				if (userids.length > 0) {
+					mini.open('user/passlist.html?userids=' + userids.toString());
+
+				}else
+					mini.alert("没有有效的数据!");
+
+			}
+
+		}
+
+		function resetPass() {
+			var rows = grid.getSelecteds();
+			if (!(rows.length > 0)) {
+				mini.alert("请选择数据行!");
+			} else {
+				var userids = new Array();
+				for (var i = 0; i < rows.length; i++) {
+					if (rows[i].isGenerate == 1) {
+						userids.push(rows[i].UserID);
+					}
+				}
+				if (userids.length > 0) {
+					grid.loading();
+					$.ajax({
+						url : "../user/resetAccountPass",
+						type : "post",
+						data : {
+							userIDs : userids.toString()
+						},
+						cache : false,
+						dataType : "json",
+						success : function(data) {
+							mini.alert(data.msg);
+						},
+						error : function(jqXHR) {
+							mini.alert(jqXHR.responseText);
+						}
+					});
+					grid.unmask();
+
+				}else
+					mini.alert("没有有效的数据!");
+
+			}
+
+		}
+	</script>
+
+</body>
+</html>

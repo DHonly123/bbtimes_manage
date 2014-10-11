@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script src="../scripts/boot.js" type="text/javascript"></script>
+<link href="../css/jquery-ui-1.10.3.custom.min.css" rel="Stylesheet" type="text/css" /> 
+<link href="../css/jquery.cropzoom.css" rel="Stylesheet" type="text/css" /> 
+<link href="../client/fineuploader-3.9.1.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../scripts/json2.js"></script>
+<script type="text/javascript" src="../scripts/jquery-ui-1.10.3.custom.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery.cropzoom.js"></script>
+<style type="text/css">
+body{
+        margin:0;padding:0;border:0;width:100%;height:100%;overflow:hidden;
+    } 
+.Btn{ font-size:16px; color:#FFF; text-decoration:none; background-color:rgba(12, 138, 198, 0.51);font-family:"微软雅黑", "宋体"; -webkit-border-radius: 3px;-moz-border-radius: 3px;border-radius: 3px; padding:4px 10px; display:inline-block; cursor:pointer;
+-webkit-box-shadow: 0 1px 1px rgba(255, 255, 255, .8);
+-moz-box-shadow: 0 1px 1px rgba(255, 255, 255, .8);
+box-shadow: 0 1px 1px rgba(255, 255, 255, .8);
+margin-top: 2px;
+}
+
+.filePrew {
+display: block;
+position: absolute;
+top: 5px;
+left: 2px;
+width: 96px;
+height: 30px;
+cursor: pointer;
+opacity: 0;
+filter:alpha(opacity: 0);
+}
+
+/* begin Button */
+.button-wrapper .button
+{
+	display:inline-block;
+	width: auto;
+	outline:none;
+	border:none;
+	background:none;
+	line-height:25px;
+	margin:0 !important;
+	padding:0 !important;
+	overflow: visible;
+	cursor: default;
+	text-decoration: none !important;
+	z-index:0;
+}
+
+.button-wrapper
+{
+	display:inline-block;
+	position:relative;
+	height: 25px;
+	overflow:hidden;
+	white-space: nowrap;
+	width: auto;
+	z-index:0;
+}
+
+.firefox2 .button-wrapper
+{
+	display:block;
+	float:left;
+}
+
+.button-wrapper .button
+{
+	display:block;
+	height: 25px;
+	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	letter-spacing: 1px;
+	white-space: nowrap;
+	text-align: left;
+	padding: 0 10px !important;
+	line-height: 25px;
+	text-decoration: none !important;
+	color: #000000 !important;
+}
+
+input, select
+{
+	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	letter-spacing: 1px;
+}
+
+.button-wrapper.hover .button, .button:hover
+{
+	color: #F3F1EC !important;
+	text-decoration: none !important;
+}
+
+.button-wrapper.active .button
+{
+	color: #F6F4F4 !important;
+}
+
+.button-wrapper .l, .button-wrapper .r
+{
+	display:block;
+	position:absolute;
+	z-index:-1;
+	height: 75px;
+	background-image: url('../images/Button.png');
+}
+
+.button-wrapper .l
+{
+	left:0;
+	right:1px;
+}
+
+.button-wrapper .r
+{
+	width:403px;
+	right:0;
+	clip: rect(auto, auto, auto, 402px);
+}
+
+.button-wrapper.hover .l, .button-wrapper.hover .r
+{
+	top: -25px;
+}
+
+.button-wrapper.active .l, .button-wrapper.active .r
+{
+	top: -50px;
+}
+
+
+/* end Button */   
+
+
+#preview-pane {
+  display: block;
+  position: absolute;
+  z-index: 2000;
+  top: 10px;
+  padding: 6px;
+  border: 1px rgba(0,0,0,.4) solid;
+  background-color: white;
+
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+
+  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* The Javascript code will set the aspect ratio of the crop
+   area based on the size of the thumbnail preview,
+   specified here */
+#preview-pane .preview-container {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+} 
+</style>
+</head>
+<body>
+	<fieldset id="fd1" style="height: 100%" >
+	 <legend>
+	 <table class="form-table" border="0" cellpadding="1" cellspacing="2">
+            <tr>
+            	<td><a class="Btn"><span><div id="fine-uploader">选择本地图片</div></span></a>【支持jpg、jpeg、png格式，文件小于5M】</td>
+			</tr>
+	</table>
+	</legend>
+	 <div class="fieldset-body">
+           <div class="PostContent">
+				<div class="boxes">
+					<table>
+						<tr>
+							<td valign="top" align="left"><div id="crop_container"></div></td>
+							<td valign="top" align="left" id="imgopration" style="display: none;">
+								<div id="preview-pane" >
+									<div class="preview-container">
+										<img src="" class="jcrop-preview"
+											alt="Preview" />
+									</div>
+									<div class="cleared"></div>
+									<span class="button-wrapper" id="crop"> <span class="l">
+									</span> <span class="r"> </span> <a class="button"
+										href="javascript:void(0)">保存</a>
+									</span> &nbsp; <span class="button-wrapper" id="restore"> <span
+										class="l"> </span> <span class="r"> </span> <a class="button"
+										href="javascript:void(0)">重置</a>
+									</span>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>     
+		</div>
+	</fieldset>
+<script type="text/javascript" src="../client/all.fineuploader-3.9.1.min.js"></script>     
+<script type="text/javascript">
+	mini.parse();
+	var params=mini.getParams();
+   	
+    function createUploader() {
+        var uploader = new qq.FineUploader({
+          element: document.getElementById('fine-uploader'),
+          request: {
+        	inputName:'uploadFile',
+            endpoint: '../image/uploadImg'
+          },
+          text: {
+        	  uploadButton:'图片上传'
+            },
+        validation: {
+          allowedExtensions: ['jpeg', 'jpg', 'png'],
+          sizeLimit:5242880
+        },
+        callbacks: {
+            onComplete: function(id, fileName, responseJSON) {
+              if (responseJSON.res==1) {
+            	 $('.qq-upload-list').html('');
+            	 imgInit("../"+responseJSON.url,responseJSON.imginfo.w,responseJSON.imginfo.h);
+               	 $(".jcrop-preview").attr("src","../"+responseJSON.url);
+               	 $("#imgopration").show();
+              }else{
+               	 mini.alert(responseJSON.des);
+              }
+            }
+          }
+        });
+      }
+      window.onload = createUploader;
+
+   	function loading() {
+   		mini.mask({
+   			el : document.body,
+   			cls : 'mini-mask-loading',
+   			html : '数据处理中请稍后...'
+   		});
+
+   	}
+   	function unloading() {
+   		mini.unmask(document.body);
+   	}
+  
+	function CloseWindow(action) {
+		if (action == "close" && form.isChanged()) {
+			if (confirm("数据被修改了，是否先保存？")) {
+				return false;
+			}
+		}
+		if (window.CloseOwnerWindow)
+			return window.CloseOwnerWindow(action);
+		else
+			window.close();
+	}
+     //图片处理
+    var rw,rh,cropzoom;
+    var cansubmit=false;
+	function imgInit(url,w,h) {
+		rw=w;
+		rh=h;
+		  cropzoom = $('#crop_container').cropzoom({
+	            width:620,
+	            height:400,
+	            bgColor: '#CCC',
+	            enableRotation:false,
+	            enableZoom:true,
+	            zoomSteps:5,
+	            rotationSteps:10,
+	            selector:{        
+	              centered:true,
+	              x:235,
+	              y:125,
+	              w:150,
+	              h:150,
+	              maxWidth:150,
+	              maxHeight:150,
+	              startWithOverlay: false,
+	              borderColor:'blue',
+	              borderColorHover:'red',
+	              onSelectorDrag:function(obj,image,selector){
+	            	  previewInit(image,selector);
+	              }
+	            },
+	            image:{
+	                source:url,
+	                width:w,
+	                height:h,
+	                minZoom:10,
+	                maxZoom:150,
+	                onZoom:function(obj,image,selector){
+	                	 previewInit(image,selector);
+	                },
+	                onImageDrag:function(obj,image,selector){
+	                	 previewInit(image,selector);
+                	
+                }
+	            }
+	        });
+	       // cropzoom.setSelector(310,125,150,150,false);
+	        $('#crop').click(function(){ 
+	        	if(cansubmit){
+	            cropzoom.send('../image/cutImg','POST',{dataid:params.id,optype:params.type},function(rta){
+	               if (rta.msg) {
+					mini.alert("保存成功！");
+					CloseWindow();
+				    }
+	            });
+	        }else mini.alert("对不起你选择的区域超出了图片区不能剪切！");
+	        });
+	        var op=cropzoom.getDataInfo().data('options');
+	        $('#restore').click(function(){
+	            $('.result').find('img').remove();
+	            $('.result').find('.txt').show()
+	            cropzoom.restore();
+	            previewInit(op.image,op.selector);
+	        })
+	       
+	       previewInit(op.image,op.selector);
+	    
+	}
+	//i 图片对象image  s选择框移动selector
+	
+	
+	function previewInit(i,s){
+		    console.log('--------------------image------------------------'); 
+	        console.log(i); 
+	        console.log('--------------------selector------------------------'); 
+	        console.log(s); 
+	        $preview = $('#preview-pane'),
+	        $pcnt = $('#preview-pane .preview-container'),
+	        $pimg = $('#preview-pane .preview-container img'),
+
+	        xsize = $pcnt.width(),
+	        ysize = $pcnt.height();
+	        //当前图片相对原图的缩放比例
+	        var _t_=0.5;
+	        //图片的宽
+	        var w1=i.w==null?i.width:i.w;
+	        //图片的高
+	        var h1=i.h==null?i.height:i.h;
+	        //图片的横坐标
+	        var x1=i.posX==null?i.x:i.posX;
+	        //图片的纵坐标
+	        var y1=i.posY==null?i.y:i.posY;
+	        //图片的宽高比例
+	        var xr=w1/h1;
+	        //选择框的横坐标
+	        var selectorx=s.x;
+	        //选择框的纵坐标
+	        var selectory=s.y;
+	        //选择框相对图片的横坐标
+	        var x2=selectorx-x1;
+	        //选择框相对图片的纵坐标
+	        var y2=selectory-y1;
+	        
+	        if(i.width!=null&&i.height!=null){
+	        	w1=w1*_t_;
+	        	h1=w1/xr;
+	        	
+	        }
+	        console.log(x2+"|"+y2)
+	        canSubmit(w1,h1,x2,y2)
+    	    $pimg.css({
+	          width: Math.round(w1) + 'px',
+	          height: Math.round(h1) + 'px',
+	         // marginLeft: '-' + Math.round(x2) + 'px',
+	         // marginTop: '-' + Math.round(y2) + 'px'
+	           marginLeft: -(x2) + 'px',
+	          marginTop: -(y2) + 'px'
+	         
+	        });
+	}
+	
+	function canSubmit(w1,h1,x2,y2){
+		if(x2<0||y2<0){
+			cansubmit=false;
+		}else if(x2>(w1-150)||y2>(h1-150)){
+			cansubmit=false;
+		}else cansubmit=true;
+		
+	}
+	
+</script>
+</body>
+</html>

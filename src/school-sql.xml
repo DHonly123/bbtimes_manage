@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="school" >
+	<sql id="startQuerySchools">
+		SELECT
+		s.SchoolID,s.SchoolCode,s.SchoolName,s.ProvinceID,p.ProvinceName,s.CityID,c.CityName,s.DistrictID,d.DistrictName,
+		s.intType,e1.Caption TypeName,s.locationType,e2.Caption locationName,s.CapitalType,e3.Caption CapitalName,s.intState,
+		ac.adminCount,gc.ClassCount,sc.StudentCount,tc.TeacherCount
+	</sql>
+    <sql id="endQuerySchools">
+		FROM be_schoolinfo s
+		left join (
+			select count(p.ProfileID) studentCount,ep.schoolID 
+			from be_profiles p left join be_extprofiles ep on p.UserID=ep.UserID
+			where p.UserType=2 group by ep.SchoolID) sc on sc.schoolID=s.schoolID
+		left join (
+			select count(p.ProfileID) teacherCount,d.schoolID
+			from be_profiles p left join be_deptinfo d on p.DeptID=d.DeptID
+			where p.UserType=0 group by d.SchoolID) tc on tc.schoolID=s.SchoolID
+		left join (
+			select count(g.ID) classCount,g.SCHOOLID
+			from ms_group g group by g.SCHOOLID) gc on gc.SCHOOLID = s.SchoolID
+		left join (
+			select count(v.userID) adminCount,v.schoolID
+			from view_userInfo v where v.roleType>100 group by v.schoolID) ac on ac.schoolID=s.schoolID
+		LEFT JOIN sys_enumdetail e1 ON s.intType=e1.DetailID
+		LEFT JOIN sys_enumdetail e2 ON s.locationType=e2.DetailID
+		LEFT JOIN sys_enumdetail e3 ON s.CapitalType=e3.DetailID
+		LEFT JOIN sys_province p ON s.ProvinceID=p.ProvinceID
+		LEFT JOIN sys_city c ON c.CityID=s.CityID
+		LEFT JOIN sys_district d ON d.DistrictID=s.DistrictID
+	</sql>
+	<sql id="QuerySchoolByID">
+		SELECT
+		s.SchoolID,s.SchoolCode,s.SchoolName,s.ProvinceID,s.CityID,s.DistrictID,s.intType,e1.Caption TypeName,
+		s.locationType,e2.Caption locationName,s.CapitalType,e3.Caption CapitalName,
+		s.intState,p.ProvinceName,c.CityName,d.DistrictName
+		FROM be_schoolinfo AS s
+		LEFT JOIN sys_enumdetail e1 ON s.intType=e1.DetailID
+		LEFT JOIN sys_enumdetail e2 ON s.locationType=e2.DetailID
+		LEFT JOIN sys_enumdetail e3 ON s.CapitalType=e3.DetailID
+		LEFT JOIN sys_province p ON s.ProvinceID=p.ProvinceID
+		LEFT JOIN sys_city c ON c.CityID=s.CityID
+		LEFT JOIN sys_district d ON d.DistrictID=s.DistrictID
+		WHERE
+		s.SchoolID=?
+	</sql>
+</sqlGroup>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+
+<style type="text/css">
+body, #allmap{margin:10px;border:0px;border-radius:10px;font-size:12px;text-align:center}
+h5,ul{margin:5px;padding:0;}
+#wapper{margin:5px auto;}
+.title{width:100%;height:auto;text-align:center;}
+.title h5{margin:10px;color:#0980b1;font-size:16px;margin-bottom:5px;}
+.title span{color:#ccc;}
+.content{padding:2px;text-align:left;line-height:18px;Word-spacing:3px;font-size:11px}
+</style>
+
+<title>通知内容</title>
+</head>
+<body>
+<div id="wapper">
+<div class="title">
+<h5>${(notice.Title)}</h5>
+时间：<span>${(notice.PublicDate)}</span>
+</div>
+<div class="content">
+	${(notice.Content)}
+</div>
+
+</div>
+</body>
+</html>

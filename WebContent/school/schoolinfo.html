@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>修改学校</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+     <script src="../scripts/boot.js" type="text/javascript"></script>
+
+    <style type="text/css">
+    fieldset
+    {
+        border:solid 1px #aaa;
+    }        
+    .hideFieldset
+    {
+        border-left:0;
+        border-right:0;
+        border-bottom:0;
+    }
+    .hideFieldset .fieldset-body
+    {
+        display:none;
+    }
+        fieldset
+    {
+        border:solid 1px #aaa;
+    }
+    body {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		width: 100%;
+		height: 100%;
+		}
+    
+    </style>
+</head>
+<body>
+    <div class="mini-toolbar">
+    <a id="btn-edit" class="mini-button" iconCls="icon-edit" onclick="onEdit" plain="true">修改</a>
+    <a class="mini-button" iconCls="icon-reload" onclick="onReload" plain="true">刷新</a>
+     </div>
+    <fieldset id="fd1" style="width:800px;">
+        <legend><span>基本信息</span></legend>
+        <div class="fieldset-body">
+            <table class="form-table" border="0" cellpadding="1" cellspacing="2">
+                <tr><td style="display: none;"> <input id="school.SchoolID" class="mini-hidden" name="school.SchoolID" value="${(school.SchoolID)!}" /></td>               
+                    <td class="form-label" style="width:80px;">省(自治区)：</td>
+                    <td style="width:150px">${(school.ProvinceName)!} </td>
+                    <td class="form-label" style="width:60px;">所在城市：</td>
+                    <td style="width:150px"> ${(school.CityName)!}</td>
+                    <td class="form-label" style="width:80px;">所在区县：</td>
+                    <td style="width:150px">${(school.DistrictName)!}</td>
+                </tr>
+                <tr>
+                     <td class="form-label" style="width:80px;">学校名称：</td>
+                    <td style="width:150px">
+                      ${(school.SchoolName)!}
+                    </td>
+                    <td  class="form-label" style="width:80px;">学校类别：</td>
+                    <td style="width:150px;">    
+                       ${(school.TypeName)!}
+                    </td>
+                    <td  class="form-label" style="width:80px;">区域类别：</td>
+                    <td style="width:150px;">    
+                      ${(school.locationName)!}
+                    </td>
+                </tr>
+                <tr>
+                    <td  class="form-label" style="width:80px;">办学类别：</td>
+                    <td style="width:150px;">    
+                      ${(school.CapitalName)!}
+                    </td>       
+                    <td  class="form-label" style="width:80px;">是否启用：</td>
+                    <td style="width:150px;">  
+                    <#if school.intState==1>已启用</#if>   
+                    <#if school.intState==0>未启用</#if>   
+                      
+                    </td>       
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+    <script type="text/javascript">
+	mini.parse();
+	var roleType=readCookie("bbm_usercookie",4,"&");
+	var editBtn=mini.get("btn-edit");
+	if (roleType==102){
+		editBtn.setVisible(false);	
+	}
+	
+	var index = 2;
+	function addTab(url) {
+		var tabs = window.parent.mini.get("mainTabs");
+		//add tab
+		var tab = {
+			title : "修改学校信息",
+			url : url,
+			showCloseButton : true
+		};
+		tab = tabs.addTab(tab);
+		//tab body
+		var el = tabs.getTabBodyEl(tab);
+		el.innerHTML = index;
+		//active tab
+		tabs.activeTab(tab);
+
+	}
+	function onEdit(){
+		var schoolID=mini.get("school.SchoolID").value;
+		addTab(bootPATH+"../school/getSchoolByID?schoolID="+schoolID);
+	}
+	
+	function onReload(){
+		window.location.reload();
+	}
+
+</script>
+</body>
+</html>

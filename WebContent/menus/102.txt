@@ -1,0 +1,18 @@
+﻿[
+	{ id: "basemanage", text: "基础管理", iconCls: "icon-collapse"},
+	{ id: "updateSchoolinfo", pid: "basemanage", text: "学校基础信息", url: "school/getSchoolBaseInfo", iconCls: "Reports", iconPosition:"top"},
+	{ id: "classSetting", pid: "basemanage", text: "班级管理", iconCls: "", url: "class/classnav.html", iconCls: "Reports", iconPosition:"top" },
+	{ id: "studentsmanage", pid: "basemanage", text: "学生档案管理", iconCls: "", url: "students/studentnav.html", iconCls: "Reports", iconPosition:"top" },
+	{ id: "deptmanage", pid: "basemanage", text: "部门管理", iconCls: "", url: "dept/deptlist.html", iconCls: "Reports", iconPosition:"top" },
+	{ id: "teachermanage", pid: "basemanage", text: "教师档案管理", iconCls: "", url: "teacher/teachernav.html", iconCls: "Reports", iconPosition:"top" },
+	
+	{ id: "workmanage", text: "业务管理", iconCls: "icon-collapse"},
+	{ id: "addNotice", pid: "workmanage", text: "系统公告", iconCls: "", url: "notice/notices.html", iconCls: "Reports", iconPosition:"top" },
+	{ id: "message", pid: "workmanage", text: "消息推送", iconCls: "", url: "message/messagenav.html", iconCls: "Reports", iconPosition:"top" },
+	    
+	{ id: "analysis", text: "统计分析", iconCls: "icon-help"},    
+	{ id: "report1", pid: "analysis", text: "班级发图一览", url: "analysis/classSummary.html", iconCls: "Reports", iconPosition:"top"},
+	{ id: "report2", pid: "analysis", text: "30日发图一览", url: "analysis/schoolPast30.html", iconCls: "Reports", iconPosition:"top"},
+	{ id: "report3", pid: "analysis", text: "30日用户访问一览", url: "analysis/userOPTrend.html", iconCls: "Reports", iconPosition:"top"},
+	{ id: "report4", pid: "analysis", text: "本园发图Top5", url: "analysis/top5.html", iconCls: "Reports", iconPosition:"top"}
+]

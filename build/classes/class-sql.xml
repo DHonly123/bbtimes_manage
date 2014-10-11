@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlGroup name="class">
+	<sql id="countClassUser">
+		select gc.Group_ID,count(gc.ID) cuCount
+			from ms_group_con gc 
+			where gc.Group_ID = ?
+	</sql>
+</sqlGroup>
+

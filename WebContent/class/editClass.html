@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>编辑班级信息</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script src="../scripts/boot.js" type="text/javascript"></script>
+<script type="text/javascript" src="../scripts/amcharts/amcharts.js"></script>
+<script type="text/javascript" src="../scripts/amcharts/serial.js"></script>
+<style type="text/css">
+body {
+	font-size: 12px;
+	color: black;
+}
+
+a:link {
+	color: #84c4e2;
+}
+
+a:visited {
+	color: #84c4e2;
+}
+
+a:hover {
+	color: #cd82ad;
+}
+
+a:active {
+	color: #84c4e2;
+}
+</style>
+<style type="text/css">
+fieldset {
+	border: solid 1px #aaa;
+}
+
+.hideFieldset {
+	border-left: 0;
+	border-right: 0;
+	border-bottom: 0;
+}
+
+.hideFieldset .fieldset-body {
+	display: none;
+}
+
+div#photo {
+	height: 180px;
+	width: 150px;
+	float: left;
+}
+
+div#baseinfo {
+	float: left;
+	margin-left: 50px;
+}
+
+.Personal_t {
+	border: 1px solid #CCC;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #FFF;
+	padding: 5px;
+	-webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, .05);
+	-moz-box-shadow: 0px 2px 4px rgba(0, 0, 0, .05);
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, .05);
+	position: relative;
+	z-index: 33;
+}
+
+.Personal_a {
+	font-family: "微软雅黑", "宋体";
+	background-color: #6b6b6b;
+	width: 150px;
+	height: 30px;
+	font-size: 14px;
+	color: #FFF;
+	margin-top: 5px;
+	line-height: 30px;
+	text-align: center;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.Personal_a a {
+	color: #FFF;
+	text-decoration: none;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	width: 100%;
+	height: 100%;
+}
+</style>
+</head>
+<body>
+	<div class="mini-toolbar" style="border: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="width: 100%;"><a class="mini-button"
+					iconCls="icon-save" onclick="onOk" plain="true">保存</a> <a
+					class="mini-button" iconCls="icon-close" onclick="onCancel"
+					plain="true">取消</a> <span class="separator"></span></td>
+			</tr>
+		</table>
+	</div>
+
+	<fieldset id="fd1">
+		<legend>
+			<span>基本信息</span>
+		</legend>
+		<div class="fieldset-body">
+			<div id="photo" class="Personal_t">
+				<div style="width: 150px; height: 150px;">
+					<img id="header" style="width: 150px; height: 150px;" src=""
+						onerror="javascript:this.src='../images/default_class.jpg'">
+				</div>
+				<div class="Personal_a">
+					<a href="javascript:uploadPhoto()">更改班级照片</a>
+				</div>
+			</div>
+			<form id="form1" method="post">
+				<div id="baseinfo">
+					<table class="form-table" border="0" cellpadding="1"
+						cellspacing="2">
+						<tr>
+							<td class="form-label" style="width: 80px;">班级名称：</td>
+							<td style="width: 150px"><input name="class.GROUPNAME"
+								value="${(classinfo.GROUPNAME)!}" class="mini-textbox"
+								required="true" /></td>
+						</tr>
+						<tr>
+							<td style="width: 150px; display: none;"><input
+								name="class.ID" value="${(classinfo.ID)!}" class="mini-textbox"
+								required="true" /></td>
+						</tr>
+					</table>
+				</div>
+			</form>
+
+		</div>
+	</fieldset>
+	<div id="tabs" class="mini-tabs" activeindex="0"
+		style="width: 100%; height: 290px;">
+		<div title="班级发图统计" iconcls="icon-node">
+			<div class="mini-fit" style="height: 280px;">
+				<div id="chartcontainer" style="width: 100%; height: 100%;"></div>
+			</div>
+		</div>
+		<div title="任职教师" iconcls="icon-node">
+			<div class="mini-fit" style="height: 280px;">
+				<div id="datagrid1" class="mini-datagrid"
+					url="../user/getClassUsers" idField="id" showPager="true"
+					style="width: 100%; height: 100%;" sizeList="[5,10,20,50]"
+					pageSize="20" idField="SchoolID" totalField="totalRow"
+					dataField="list">
+					<div property="columns">
+						<div type="indexcolumn"></div>
+						<div field="DisplayName" width="120" headerAlign="center"
+							allowSort="true">教师姓名</div>
+						<div field="PhoneMobile" width="120" headerAlign="center"
+							allowSort="true">教师电话</div>
+						<div field="DeptID" width="120" headerAlign="center"
+							allowSort="true" renderer="renderDept">所在部门</div>
+						<div field="niCheng" width="120" headerAlign="center"
+							allowSort="true">教师昵称</div>
+						<div field="isGenerate" width="120" headerAlign="center"
+							allowSort="true" renderer="onRenderer">帐号生成？</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div title="班级学生" iconcls="icon-node">
+			<div class="mini-fit" style="height: 280px;">
+				<div id="datagrid2" class="mini-datagrid"
+					url="../user/getClassUsers" idField="id" showPager="true"
+					style="width: 100%; height: 100%;" sizeList="[5,10,20,50]"
+					pageSize="20" idField="SchoolID" totalField="totalRow"
+					dataField="list">
+					<div property="columns">
+						<div type="indexcolumn"></div>
+						<div field="DisplayName" width="120" headerAlign="center"
+							allowSort="true">学生姓名</div>
+						<div field="PhoneMobile" width="120" headerAlign="center"
+							allowSort="true">学生电话</div>
+						<div field="niCheng" width="120" headerAlign="center"
+							allowSort="true">学生昵称</div>
+						<div field="isGenerate" width="120" headerAlign="center"
+							allowSort="true" renderer="onRenderer">帐号生成？</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		mini.parse();
+		var grid1 = mini.get("datagrid1");
+		grid1.load({
+			classID : '${(classinfo.ID)!}',
+			userType : 0
+		});
+		var grid2 = mini.get("datagrid2");
+		grid2.load({
+			classID : '${(classinfo.ID)!}',
+			userType : 2
+		});
+		$('#header').attr('src', classHeader('${(classinfo.ID)!}'));
+		initAnalysis();
+		var form = new mini.Form("form1");
+		function SaveData() {
+			form.validate();
+			if (form.isValid() == false)
+				return;
+			$.ajax({
+				url : "../class/update",
+				type : "post",
+				data : $("#form1").serialize(),
+				cache : false,
+				dataType : "json",
+				success : function(data) {
+					mini.alert(data);
+					CloseWindow("save");
+
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					mini.alert(jqXHR.responseText);
+					CloseWindow();
+				}
+			});
+		}
+		var boos = [ {
+			id : 1,
+			text : '已生成'
+		}, {
+			id : 0,
+			text : '未生成'
+		} ];
+
+		function onRenderer(e) {
+			for (var i = 0, l = boos.length; i < l; i++) {
+				var g = boos[i];
+				if (g.id == e.value)
+					return g.text;
+			}
+			return "";
+		}
+
+		function renderDept(e) {
+			var data = $.ajax({
+				url : '../dept/getDeptList',
+				data : {
+					schoolID : '${(classinfo.SCHOOLID)!}'
+				},
+				async : false
+			}).responseText;
+			data = eval(data);
+			for (var i = 0; i < data.length; i++) {
+				if (data[i].ID == e.value) {
+					return data[i].Caption;
+				}
+			}
+		}
+
+		function GetData() {
+			var o = form.getData();
+			return o;
+		}
+		function CloseWindow(action) {
+			if (action == "close" && form.isChanged()) {
+				if (confirm("数据已更改，是否保存？")) {
+					return false;
+				}
+			}
+			if (window.CloseOwnerWindow)
+				return window.CloseOwnerWindow(action);
+			else
+				window.close();
+		}
+		function onOk(e) {
+			SaveData();
+		}
+		function onCancel(e) {
+			CloseWindow("cancel");
+		}
+		function toggleFieldSet(ck, id) {
+			var dom = document.getElementById(id);
+			dom.className = !ck.checked ? "hideFieldset" : "";
+		}
+
+		function uploadPhoto() {
+			mini.open({
+						url : "user/photo.html?id=${(classinfo.ID)!}&type=01",
+						title : "班级头像修改",
+						width : 820,
+						height : 600,
+						onload : function() {
+
+						},
+						ondestroy : function(action) {
+							$("#header").attr("src", classHeader('${(classinfo.ID)!}'));
+						}
+					});
+		}
+
+		function initAnalysis() {
+			$.ajax({
+				url : "../report/classTrend",
+				data : {
+					classID : '${(classinfo.ID)!}'
+				},
+				type : "post",
+				success : function(result) {
+					var charData = JSON.parse(JSON.stringify(result));
+					var chart = new AmCharts.AmSerialChart();
+					chart.dataProvider = charData;
+					chart.categoryField = "label";
+
+					var graph = new AmCharts.AmGraph();
+					graph.valueField = "value";
+					graph.type = "column";
+					graph.lineAlpha = 0;
+					graph.fillAlphas = 0.8;
+					chart.addGraph(graph);
+
+					chart.write("chartcontainer");
+				},
+				error : function() {
+
+				}
+			});
+		}
+
+		function int_() {
+			$.getJSON("../report/class_line", {
+				classID : '${(classinfo.ID)!}'
+			}, function(data) {
+				var data_new = [];
+				var colors = new Array();
+				for (var i = 0; i < data.length; i++) {
+					var data_ = [];
+
+					data_.push(insert_flg(data[i].dataTime.toString(), "-", 4)
+							+ '月');
+					data_.push(data[i].value * 1);
+					data_new.push(data_);
+					var color = getRandomColor();
+					colors.push(color);
+				}
+				var myChart = new JSChart('chartcontainer', 'bar');
+				myChart.setDataArray(data_new);
+				myChart.setTitle('月消息发送统计');
+				myChart.colorizeBars(colors);
+				myChart.setAxisColor('#9D9F9D');
+				myChart.setAxisWidth(1);
+				myChart.setAxisNameX('月份');
+				myChart.setAxisNameY('消息发送数量');
+				myChart.setAxisNameColor('#655D5D');
+				myChart.setAxisNameFontSize(9);
+				myChart.setAxisPaddingLeft(50);
+				myChart.setAxisValuesDecimals(1);
+				myChart.setAxisValuesColor('#9C1919');
+				myChart.setTextPaddingLeft(0);
+				myChart.setBarValuesColor('#9C1919');
+				myChart.setBarBorderWidth(0);
+				myChart.setTitleColor('#8C8382');
+				myChart.setGridColor('#5D5F5D');
+				myChart.setSize(760, 280);
+				myChart.draw();
+			})
+		}
+		var getRandomColor = function() {
+			return (function(m, s, c) {
+				return (c ? arguments.callee(m, s, c - 1) : '#')
+						+ s[m.floor(m.random() * 16)]
+			})(Math, '0123456789abcdef', 5)
+		}
+		function insert_flg(str, flg, sn) {
+			var newstr = "";
+			for (var i = 0; i < str.length; i += sn) {
+
+				var tmp = str.substring(i, i + sn);
+				newstr += tmp + flg;
+			}
+
+			return newstr;
+		}
+	</script>
+</body>
+</html>

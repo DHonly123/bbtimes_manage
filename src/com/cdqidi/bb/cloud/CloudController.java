@@ -11,6 +11,7 @@ import com.cdqidi.bb.comm.BaseController;
 import com.cdqidi.bb.comm.CommOpration;
 import com.cdqidi.bb.comm.util.DateUtils;
 import com.cdqidi.bb.comm.util.StringTool;
+import com.cdqidi.bb.user.UserProfile;
 import com.jfinal.aop.Before;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
 import com.jfinal.ext.route.ControllerBind;
@@ -59,6 +60,28 @@ public class CloudController extends BaseController {
 	}
 	
 	@Before(Tx.class)
+	public void submitRecordMobile() {
+		String SN = getPara("SN");
+		String Card = getPara("Card");
+		String DataTime = getPara("DataTime");
+		Map<Object, Object> data = new HashMap<Object, Object>();
+		boolean r = false;
+		String tableName = "ns_recordDetail_"+DateUtils.getYear();
+		UserProfile p = UserProfile.dao.findFirst("select * from be_profiles where CardNo=?",Card);
+		Record record = new Record().set("MachineCode", SN).set("DataID", 0).set("PersonID",p.get("ProfileID") )
+				.set("UserName", p.get("DisplayName")).set("CardNumber", Card).set("RecordTime", DataTime).set("Source", "Mobile");
+		r = Db.save(tableName, record);
+		if (r) {
+        	data.put("ExecuteState", 1);
+        	data.put("Msg", "数据提交成功！");
+        }else {
+        	data.put("ExecuteState", 0);
+        	data.put("Msg", "数据提交失败！");
+        }
+		renderJson(data);
+	}
+	
+	@Before(Tx.class)
 	public void submitRecordData() {
 		
 		String records= getPara("records");
@@ -66,27 +89,13 @@ public class CloudController extends BaseController {
 		Map<Object, Object> data = new HashMap<Object, Object>();
 		boolean r = false;
 		String tableName = "ns_recordDetail_"+DateUtils.getYear();
-		/*
-		String mSql = "CREATE TABLE IF NOT EXISTS "+tableName+" ( \n"
-		  +"`DetailID` int(11) NOT NULL AUTO_INCREMENT, \n"
-		  +"`DataID` varchar(64) DEFAULT NULL, \n"
-		  +"`MachineCode` varchar(64) DEFAULT NULL, \n"
-		  +"`PersonID` int(11) DEFAULT NULL, \n"
-		  +"`UserName` varchar(20) DEFAULT NULL, \n"
-		  +"`CardNumber` varchar(16) DEFAULT NULL, \n"
-		  +"`RecordTime` varchar(20) DEFAULT NULL, \n"
-		  +"`ExecTime` varchar(20) DEFAULT NULL, \n"
-		  +"PRIMARY KEY (`DetailID`) \n"
-		  +")";
-		if(Db.update(mSql)>0)
-			r = true;
-		*/
+
 		if(Db.query("select MachineCode from ns_machineInfo where MachineCode=?",machineCode).size()>0){
 			JSONArray jsonArray =JSONArray.fromObject(records);
 			for(int i=0;i<jsonArray.size();i++){ 
 				Map o=(Map)jsonArray.get(i);
 				Record record = new Record().set("MachineCode", machineCode).set("DataID", o.get("DataID")).set("PersonID", o.get("PersonID")).set("UserName", o.get("UserName"))
-						.set("CardNumber", o.get("CardNumber")).set("RecordTime", o.get("RecordTime"));
+						.set("CardNumber", o.get("CardNumber")).set("RecordTime", o.get("RecordTime")).set("Source", "Machine");
 				r=Db.save(tableName, record);
 			}
 	        if (r) {

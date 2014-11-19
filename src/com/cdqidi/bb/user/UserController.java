@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.sf.json.JSONArray;
+
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.type.JavaType;
@@ -477,9 +479,10 @@ public class UserController extends BaseController implements CommOpration {
 			}
 		}
 		List<Record> data = Db.find(sqlString,new Object[] {getPara("classID"), getPara("classID")});
-		String[] headers = new String[] { "班级", "性别", "身份号" ,"姓名", "电话号码", "账号状态" };
+		String[] columns = new String[] {"GroupName","SexCaption","identifyNmuber","DisplayName","PhoneMobile","CardNO","CardNO2","CardNo3","State"};
+		String[] headers = new String[] { "班级", "性别", "身份号" ,"姓名", "电话号码", "卡号1", "卡号2", "卡号3","账户状态" };
         render(PoiRender.me(data)
-        		.fileName("data.xls").headers(headers).cellWidth(5000).headerRow(2));
+        		.fileName("data.xls").headers(headers).columns(columns).cellWidth(5000).headerRow(2));
 	}
 
 	/**
@@ -522,9 +525,10 @@ public class UserController extends BaseController implements CommOpration {
 			sqlString += " and (p.PhoneMobile LIKE '%"+ searchKey +"%' OR p.DisplayName LIKE '%" + searchKey + "%' OR p.niCheng LIKE '%" + searchKey + "%')";
 		}
 		List<Record> data = Db.find(sqlString,new Object[] {getPara("deptID"), getPara("deptID")});
-		String[] headers = new String[] { "部门", "性别", "身份号" ,"姓名", "电话号码", "账号状态" };
+		String[] headers = new String[] { "部门", "性别", "身份号" ,"姓名", "电话号码", "卡号","账号状态" };
+		String[] columns = new String[] {"deptName","SexCaption","identifyNmuber","DisplayName","PhoneMobile","CardNO","State"};
         render(PoiRender.me(data)
-        		.fileName("data.xls").headers(headers).cellWidth(5000).headerRow(2));
+        		.fileName("data.xls").headers(headers).columns(columns).cellWidth(5000).headerRow(2));
 	}
 	
 	public void getUserCallRecord(){
@@ -929,6 +933,8 @@ public class UserController extends BaseController implements CommOpration {
 	}
 
 	public void exportLog() {
+		JSONArray ja = JSONArray.fromObject(getPara("excelData"));
+		/*
 		String data = getPara("columns");
 		List<CallBackMsg> beanList = Lists.newLinkedList();
 		try {
@@ -941,15 +947,11 @@ public class UserController extends BaseController implements CommOpration {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
-		}
-		String filename = DateUtils.nowDateTime() + "-importLog.xls";
-		/*try {
-			filename = new String(filename.getBytes(), "ISO-8859-1");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
 		}*/
+		String filename = DateUtils.nowDateTime() + "-importLog.xls";
 		String[] headers = new String[] {"消息类型","消息说明","姓名","电话号码"};
-		render(PoiRender.me(beanList).fileName(filename).headers(headers)
+		String[] columns = new String[] {"msgtype","msg","name","phone"};
+		render(PoiRender.me(ja).fileName(filename).headers(headers).columns(columns)
 				.cellWidth(5000).headerRow(2));
 	}
 

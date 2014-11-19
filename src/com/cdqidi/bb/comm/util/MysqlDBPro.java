@@ -13,13 +13,9 @@ public class MysqlDBPro implements ICallback {
 	@Override
 	public Object run(Connection conn) throws SQLException {
 		CallableStatement proc = null;
-		try {
-			proc = conn.prepareCall("{ call myProc_init_tags(?) }");
-			proc.setString(1, userid);
-			proc.execute();
-		} finally {
-			DbKit.close(proc, conn);
-		}
+		proc = conn.prepareCall("{ call myProc_init_tags(?) }");
+		proc.setString(1, userid);
+		proc.execute();
 		return null;
 	}
 

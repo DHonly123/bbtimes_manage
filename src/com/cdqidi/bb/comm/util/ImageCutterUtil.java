@@ -100,10 +100,11 @@ public class ImageCutterUtil {
         if(null == formatName) return targetPath;
         formatName = formatName.toLowerCase();
         
-        // 防止图片后缀与图片本身类型不一致的情况
+        /* 防止图片后缀与图片本身类型不一致的情况
         String pathPrefix = getPathWithoutSuffix(targetPath);
         targetPath = pathPrefix + "jpg";
-        //System.err.println(formatName);
+        System.err.println(formatName);         
+        */
         // GIF需要特殊处理
         if(IMAGE_FORMAT.GIF.getValue() == formatName){
             GifDecoder decoder = new GifDecoder();  

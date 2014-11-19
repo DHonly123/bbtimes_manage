@@ -102,7 +102,7 @@ body {
 	<div class="mini-toolbar">
 		<a class="mini-button" iconCls="icon-save" onclick="onOk" plain="true">保存</a>
 		<span class="separator"></span> 
-		<a class="mini-button" iconCls="icon-remove" onclick="onCancel" plain="true">取消</a>
+		<a class="mini-button" iconCls="icon-close" onclick="onCancel" plain="true">关闭</a>
 	</div>
 
 	<fieldset id="fd1">
@@ -179,8 +179,16 @@ body {
 	</fieldset>
 	<div id="tabs" class="mini-tabs" activeindex="0"
 		style="width: 100%; height: 290px;">
+		<div title="用户发图统计" iconcls="icon-node">
+			<div class="mini-fit" style="height: 280px;">
+				<div id="chartcontainer" style="width: 100%; height: 100%;"></div>
+			</div>
+		</div>
 		<div title="刷卡记录" iconcls="icon-node">
 			<div class="mini-fit" style="height: 280px;">
+				<div class="mini-toolbar">
+					<a class="mini-button" iconCls="icon-download" onclick="exportRecord" plain="true">导出</a>
+				</div>
 				<div id="datagrid1" class="mini-datagrid"
 					url="../card/getRecordDetailByUserID" idField="DetailID" showPager="false"
 					style="width: 100%; height: 100%;">
@@ -197,11 +205,11 @@ body {
 					</div>
 				</div>
 			</div>
-		</div>
-		<div title="用户发图统计" iconcls="icon-node">
-			<div class="mini-fit" style="height: 280px;">
-				<div id="chartcontainer" style="width: 100%; height: 100%;"></div>
-			</div>
+			<!--导出Excel相关HTML-->
+			<form id="excelForm"  action="../card/exportRecordDetailByUserID" method="post" target="excelIFrame">
+			    <input type="hidden" name="profileID" id="profileID" />
+			</form>
+			<iframe id="excelIFrame" name="excelIFrame" style="display:none;"></iframe>
 		</div>
 		<div title="任教班级" iconcls="icon-node">
 			<div class="mini-fit" style="height: 280px;">
@@ -242,182 +250,192 @@ body {
 		</div>
 	</div>
 
-		<script type="text/javascript">
-			mini.parse();
-			var grid1 = mini.get("datagrid1");
-			var grid2 = mini.get("datagrid2");
-			var grid3 = mini.get("datagrid3");
-			var userID = mini.getParams().userID;
-			var schoolId = readCookie("bbm_usercookie", 3, "&");
-			$('#header').attr('src', baseHeader('${(teacher.UserID)!}'));
-			var dep = mini.get("dept");
-			$.getJSON("../dept/getDeptList", {
-				schoolID : schoolId
-			}, function(data) {
-				if (data != null) {
-					var data_array = new Array();
-					for (var i = 0; i < data.length; i++) {
-						if ('0' != data[i].PID || 0 != data[i].PID) {
-							data_array.push(data[i]);
-						}
-					}
-					dep.setData(data_array);
+<script type="text/javascript">
+	mini.parse();
+	var grid1 = mini.get("datagrid1");
+	var grid2 = mini.get("datagrid2");
+	var grid3 = mini.get("datagrid3");
+	var userID = mini.getParams().userID;
+	var schoolId = readCookie("bbm_usercookie", 3, "&");
+	$('#header').attr('src', baseHeader('${(teacher.UserID)!}'));
+	var dep = mini.get("dept");
+	$.getJSON("../dept/getDeptList", {
+		schoolID : schoolId
+	}, function(data) {
+		if (data != null) {
+			var data_array = new Array();
+			for (var i = 0; i < data.length; i++) {
+				if ('0' != data[i].PID || 0 != data[i].PID) {
+					data_array.push(data[i]);
 				}
-			});
-			grid1.load({
-				profileID : ${(teacher.ProfileID)!}
-			});
-			grid2.load({
-				userID : userID
-			});
-			grid3.load({
-				userID : userID
-			});
-			
-			initAnalysis(); //初始化图形
-			function toggleFieldSet(ck, id) {
-				var dom = document.getElementById(id);
-				dom.className = !ck.checked ? "hideFieldset" : "";
 			}
-			
-			var form = new mini.Form("form1");
-			function SaveData() {
-				form.validate();
-				if (form.isValid() == false)
-					return;
-				$.ajax({
-					url : "../user/update",
-					type : "post",
-					data : $("#form1").serialize(),
-					cache : false,
-					dataType : "json",
-					success : function(data) {
-						CloseWindow("save");
-						mini.alert(data);
-					},
-					error : function(jqXHR, textStatus, errorThrown) {
-						mini.alert(jqXHR.responseText);
-						CloseWindow();
-					}
-				});
+			dep.setData(data_array);
+		}
+	});
+	grid1.load({
+		profileID : ${(teacher.ProfileID)!}
+	});
+	grid2.load({
+		userID : userID
+	});
+	grid3.load({
+		userID : userID
+	});
+	
+	initAnalysis(); //初始化图形
+	function toggleFieldSet(ck, id) {
+		var dom = document.getElementById(id);
+		dom.className = !ck.checked ? "hideFieldset" : "";
+	}
+	
+	var form = new mini.Form("form1");
+	function SaveData() {
+		form.validate();
+		if (form.isValid() == false)
+			return;
+		$.ajax({
+			url : "../user/update",
+			type : "post",
+			data : $("#form1").serialize(),
+			cache : false,
+			dataType : "json",
+			success : function(data) {
+				CloseWindow("save");
+				mini.alert(data);
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				mini.alert(jqXHR.responseText);
+				CloseWindow();
 			}
+		});
+	}
 
-			function CloseWindow(action) {
-				if (action == "close" && form.isChanged()) {
-					if (confirm("数据被修改了，是否先保存？")) {
-						return false;
-					}
-				}
-				if (window.CloseOwnerWindow)
-					return window.CloseOwnerWindow(action);
-				else
-					window.close();
+	function CloseWindow(action) {
+		if (action == "close" && form.isChanged()) {
+			if (confirm("数据被修改了，是否先保存？")) {
+				return false;
 			}
-			function onOk(e) {
-				SaveData();
+		}
+		if (window.CloseOwnerWindow)
+			return window.CloseOwnerWindow(action);
+		else
+			window.close();
+	}
+	function onOk(e) {
+		SaveData();
+	}
+	function onCancel(e) {
+		CloseWindow("cancel");
+	}
+
+	function uploadPhoto() {
+		mini.open({
+			url : "user/photo.html?id=${(teacher.UserID)!}&type=02",
+			title : "用户头像修改",
+			width : 820,
+			height : 600,
+			onload : function() {
+			},
+			ondestroy : function(action) {
+				$("#header").attr("src",
+						baseHeader('${(teacher.UserID)!}'));
 			}
-			function onCancel(e) {
-				CloseWindow("cancel");
+		});
+	}
+	
+	function initAnalysis() {
+		$.ajax({
+			url : "../report/userTrend",
+			data : {
+				userID : '${(teacher.UserID)!}'
+			},
+			type : "post",
+			success : function(result) {
+				var charData = JSON.parse(JSON.stringify(result));
+				var chart = new AmCharts.AmSerialChart();
+                   chart.dataProvider = charData;
+                   chart.categoryField = "label";
+
+                   var graph = new AmCharts.AmGraph();
+                   graph.valueField = "value";
+                   graph.type = "column";
+                   graph.lineAlpha = 0;
+                   graph.fillAlphas = 0.8;
+                   chart.addGraph(graph);
+
+                   chart.write("chartcontainer");
+			},
+			error : function() {
+
 			}
+		});
+	}
 
-			function uploadPhoto() {
-				mini.open({
-					url : "user/photo.html?id=${(teacher.UserID)!}&type=02",
-					title : "用户头像修改",
-					width : 820,
-					height : 600,
-					onload : function() {
-					},
-					ondestroy : function(action) {
-						$("#header").attr("src",
-								baseHeader('${(teacher.UserID)!}'));
-					}
-				});
+	function int_() {
+		$.getJSON("../report/user_bar", {
+			userID : '${(teacher.UserID)!}'
+		}, function(data) {
+			var data_new = [];
+			var colors = new Array();
+			for (var i = 0; i < data.length; i++) {
+				var data_ = [];
+
+				data_.push(insert_flg(data[i].dataTime.toString(), "-",
+						4)
+						+ '月');
+				data_.push(data[i].value * 1);
+				data_new.push(data_);
+				var color = getRandomColor();
+				colors.push(color);
 			}
-			
-			function initAnalysis() {
-				$.ajax({
-					url : "../report/userTrend",
-					data : {
-						userID : '${(teacher.UserID)!}'
-					},
-					type : "post",
-					success : function(result) {
-						var charData = JSON.parse(JSON.stringify(result));
-						var chart = new AmCharts.AmSerialChart();
-	                    chart.dataProvider = charData;
-	                    chart.categoryField = "label";
+			var myChart = new JSChart('chartcontainer', 'bar');
+			myChart.setDataArray(data_new);
+			myChart.setTitle('月消息发送统计');
+			myChart.colorizeBars(colors);
+			myChart.setAxisColor('#9D9F9D');
+			myChart.setAxisWidth(1);
+			myChart.setAxisNameX('月份');
+			myChart.setAxisNameY('消息发送数量');
+			myChart.setAxisNameColor('#655D5D');
+			myChart.setAxisNameFontSize(9);
+			myChart.setAxisPaddingLeft(50);
+			myChart.setAxisValuesDecimals(1);
+			myChart.setAxisValuesColor('#9C1919');
+			myChart.setTextPaddingLeft(0);
+			myChart.setBarValuesColor('#9C1919');
+			myChart.setBarBorderWidth(0);
+			myChart.setTitleColor('#8C8382');
+			myChart.setGridColor('#5D5F5D');
+			myChart.setSize(760, 280);
+			myChart.draw();
+		})
+	}
+	var getRandomColor = function() {
+		return (function(m, s, c) {
+			return (c ? arguments.callee(m, s, c - 1) : '#')
+					+ s[m.floor(m.random() * 16)]
+		})(Math, '0123456789abcdef', 5)
+	}
+	function insert_flg(str, flg, sn) {
+		var newstr = "";
+		for (var i = 0; i < str.length; i += sn) {
 
-	                    var graph = new AmCharts.AmGraph();
-	                    graph.valueField = "value";
-	                    graph.type = "column";
-	                    graph.lineAlpha = 0;
-	                    graph.fillAlphas = 0.8;
-	                    chart.addGraph(graph);
+			var tmp = str.substring(i, i + sn);
+			newstr += tmp + flg;
+		}
 
-	                    chart.write("chartcontainer");
-					},
-					error : function() {
-
-					}
-				});
-			}
-
-			function int_() {
-				$.getJSON("../report/user_bar", {
-					userID : '${(teacher.UserID)!}'
-				}, function(data) {
-					var data_new = [];
-					var colors = new Array();
-					for (var i = 0; i < data.length; i++) {
-						var data_ = [];
-
-						data_.push(insert_flg(data[i].dataTime.toString(), "-",
-								4)
-								+ '月');
-						data_.push(data[i].value * 1);
-						data_new.push(data_);
-						var color = getRandomColor();
-						colors.push(color);
-					}
-					var myChart = new JSChart('chartcontainer', 'bar');
-					myChart.setDataArray(data_new);
-					myChart.setTitle('月消息发送统计');
-					myChart.colorizeBars(colors);
-					myChart.setAxisColor('#9D9F9D');
-					myChart.setAxisWidth(1);
-					myChart.setAxisNameX('月份');
-					myChart.setAxisNameY('消息发送数量');
-					myChart.setAxisNameColor('#655D5D');
-					myChart.setAxisNameFontSize(9);
-					myChart.setAxisPaddingLeft(50);
-					myChart.setAxisValuesDecimals(1);
-					myChart.setAxisValuesColor('#9C1919');
-					myChart.setTextPaddingLeft(0);
-					myChart.setBarValuesColor('#9C1919');
-					myChart.setBarBorderWidth(0);
-					myChart.setTitleColor('#8C8382');
-					myChart.setGridColor('#5D5F5D');
-					myChart.setSize(760, 280);
-					myChart.draw();
-				})
-			}
-			var getRandomColor = function() {
-				return (function(m, s, c) {
-					return (c ? arguments.callee(m, s, c - 1) : '#')
-							+ s[m.floor(m.random() * 16)]
-				})(Math, '0123456789abcdef', 5)
-			}
-			function insert_flg(str, flg, sn) {
-				var newstr = "";
-				for (var i = 0; i < str.length; i += sn) {
-
-					var tmp = str.substring(i, i + sn);
-					newstr += tmp + flg;
-				}
-
-				return newstr;
-			}
-		</script>
+		return newstr;
+	}
+	
+	function exportRecord(){
+		if (grid1.totalCount>0) {
+			document.getElementById("profileID").value = ${(teacher.ProfileID)!};
+		    var excelForm = document.getElementById("excelForm");
+		    excelForm.submit();
+		}else {
+			mini.alert("该用户没有考勤数据!");
+		}
+	}
+</script>
 </body>
 </html>

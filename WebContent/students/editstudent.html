@@ -158,6 +158,9 @@ body {
 		style="width: 100%; height: 290px;">
 		<div title="刷卡记录" iconcls="icon-node">
 			<div class="mini-fit" style="height: 280px;">
+				<div class="mini-toolbar">
+					<a class="mini-button" iconCls="icon-download" onclick="exportRecord" plain="true">导出</a>
+				</div>
 				<div id="datagrid1" class="mini-datagrid"
 					url="../card/getRecordDetailByUserID" idField="DetailID" showPager="false"
 					style="width: 100%; height: 100%;">
@@ -174,6 +177,11 @@ body {
 					</div>
 				</div>
 			</div>
+			<!--导出Excel相关HTML-->
+			<form id="excelForm"  action="../card/exportRecordDetailByUserID" method="post" target="excelIFrame">
+			    <input type="hidden" name="profileID" id="profileID" />
+			</form>
+			<iframe id="excelIFrame" name="excelIFrame" style="display:none;"></iframe>
 		</div>
 		<div title="平台使用统计" iconcls="icon-node">
 			<div class="mini-fit" style="height: 280px;">
@@ -268,6 +276,16 @@ body {
 					$("#header").attr("src", baseHeader('${(student.UserID)!}'));
 				}
 			});
+		}
+		
+		function exportRecord(){
+			if (grid1.totalCount>0) {
+				document.getElementById("profileID").value = ${(student.ProfileID)!};
+			    var excelForm = document.getElementById("excelForm");
+			    excelForm.submit();
+			}else {
+				mini.alert("该用户没有考勤数据!");
+			}
 		}
 	</script>
 </body>

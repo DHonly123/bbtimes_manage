@@ -6,8 +6,10 @@ import java.util.UUID;
 import com.cdqidi.bb.classes.ClassInfo;
 import com.cdqidi.bb.comm.BaseController;
 import com.cdqidi.bb.comm.CommOpration;
+import com.cdqidi.bb.comm.util.DateUtils;
 import com.cdqidi.bb.comm.util.StringTool;
 import com.jfinal.ext.plugin.sqlinxml.SqlKit;
+import com.jfinal.ext.render.excel.PoiRender;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
@@ -94,6 +96,16 @@ public class CardController extends BaseController implements CommOpration{
 	public void getRecordDetailByUserID(){
 		List<RecordDetail> list = new RecordDetail().find("select * from ns_recordDetail_2014 where personID=? order by RecordTime",getPara("profileID"));
 		renderJson(list);
+	}
+	
+	public void exportRecordDetailByUserID(){
+		List<RecordDetail> list = new RecordDetail().find("select UserName,CardNumber,RecordTime,Source "
+				+ "from ns_recordDetail_2014 where personID=? order by RecordTime",getPara("profileID"));
+		String filename = "CardRecord.xls";
+		String[] headers = new String[] {"姓名","卡号","刷卡时间","刷卡来源"};
+		String[] columns = new String[] {"UserName","CardNumber","RecordTime","Source"};
+		render(PoiRender.me(list).fileName(filename).headers(headers).columns(columns)
+				.cellWidth(5000).headerRow(2));
 	}
 	
 }

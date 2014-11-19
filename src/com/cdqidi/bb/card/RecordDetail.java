@@ -28,7 +28,8 @@ public class RecordDetail extends Model<RecordDetail>{
 			}else{
 				//没有当日数据，插入
 				r = new CardRecord().set("RecordID", cc.get("recordID")).set("SchoolID", cc.get("schoolID"))
-						.set("UserID", cc.get("UserID")).set("RecordDate", cc.get("recordDate")).set("AmTime", cc.get("recordTime")).save();
+						.set("UserID", cc.get("UserID")).set("RecordDate", cc.get("recordDate")).set("AmTime", cc.get("recordTime"))
+						.set("PmTime","").save();
 			}
 			if(r){
 				Db.update(SqlKit.sql("card.updateExecTime"),cc.get("recordID"));

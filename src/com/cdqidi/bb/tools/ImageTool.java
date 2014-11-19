@@ -81,7 +81,7 @@ public class ImageTool extends BaseController{
 				case "00":
 					distsrc = propFactory.getConfig("HEADER_SAVEPATH") + "/organization/"
 							+ dataid + "/";
-					fileName = "header150x150.jpg";
+					fileName = "header150x150.png";
 					break;
 				case "01":
 					distsrc = propFactory.getConfig("HEADER_SAVEPATH") + "/circle/"
